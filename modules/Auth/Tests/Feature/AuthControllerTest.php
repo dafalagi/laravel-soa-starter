@@ -13,14 +13,14 @@ class AuthControllerTest extends TestCase
 
     public function test_user_can_register(): void
     {
-        $userData = [
+        $user_data = [
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
         ];
 
-        $response = $this->postJson('/api/v1/auth/register', $userData);
+        $response = $this->postJson('/api/v1/auth/register', $user_data);
 
         $response->assertStatus(201)
             ->assertJsonStructure([
@@ -48,14 +48,14 @@ class AuthControllerTest extends TestCase
     {
         User::factory()->create(['email' => 'john@example.com']);
 
-        $userData = [
+        $user_data = [
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
         ];
 
-        $response = $this->postJson('/api/v1/auth/register', $userData);
+        $response = $this->postJson('/api/v1/auth/register', $user_data);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['email']);

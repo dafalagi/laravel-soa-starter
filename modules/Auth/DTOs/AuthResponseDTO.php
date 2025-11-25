@@ -7,7 +7,7 @@ class AuthResponseDTO
     public function __construct(
         public readonly UserResponseDTO $user,
         public readonly ?string $token = null,
-        public readonly ?string $tokenType = 'Bearer'
+        public readonly ?string $token_type = 'Bearer'
     ) {}
 
     public static function fromUserAndToken(UserResponseDTO $user, ?string $token = null): self
@@ -15,7 +15,7 @@ class AuthResponseDTO
         return new self(
             user: $user,
             token: $token,
-            tokenType: $token ? 'Bearer' : null
+            token_type: $token ? 'Bearer' : null
         );
     }
 
@@ -27,7 +27,7 @@ class AuthResponseDTO
 
         if ($this->token) {
             $data['token'] = $this->token;
-            $data['token_type'] = $this->tokenType;
+            $data['token_type'] = $this->token_type;
         }
 
         return $data;

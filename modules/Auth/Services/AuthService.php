@@ -28,7 +28,7 @@ class AuthService implements AuthServiceInterface
         }
 
         // Validate password confirmation
-        if ($dto->password !== $dto->passwordConfirmation) {
+        if ($dto->password !== $dto->password_confirmation) {
             throw ValidationException::withMessages([
                 'password' => ['The password confirmation does not match.'],
             ]);
@@ -41,9 +41,9 @@ class AuthService implements AuthServiceInterface
             'password' => Hash::make($dto->password),
         ]);
 
-        $userDto = UserResponseDTO::fromModel($user);
+        $user_dto = UserResponseDTO::fromModel($user);
 
-        return AuthResponseDTO::fromUserAndToken($userDto);
+        return AuthResponseDTO::fromUserAndToken($user_dto);
     }
 
     /**
@@ -61,9 +61,9 @@ class AuthService implements AuthServiceInterface
         }
 
         $user = Auth::user();
-        $userDto = UserResponseDTO::fromModel($user);
+        $user_dto = UserResponseDTO::fromModel($user);
 
-        return AuthResponseDTO::fromUserAndToken($userDto);
+        return AuthResponseDTO::fromUserAndToken($user_dto);
     }
 
     /**
@@ -99,8 +99,8 @@ class AuthService implements AuthServiceInterface
             throw new AuthenticationException('Unauthenticated.');
         }
 
-        $userDto = UserResponseDTO::fromModel($user);
+        $user_dto = UserResponseDTO::fromModel($user);
 
-        return AuthResponseDTO::fromUserAndToken($userDto);
+        return AuthResponseDTO::fromUserAndToken($user_dto);
     }
 }

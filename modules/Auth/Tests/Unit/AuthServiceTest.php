@@ -15,12 +15,12 @@ class AuthServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    private AuthService $authService;
+    private AuthService $auth_service;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->authService = new AuthService();
+        $this->auth_service = new AuthService();
     }
 
     public function test_register_creates_new_user(): void
@@ -29,10 +29,10 @@ class AuthServiceTest extends TestCase
             name: 'John Doe',
             email: 'john@example.com',
             password: 'password123',
-            passwordConfirmation: 'password123'
+            password_confirmation: 'password123'
         );
 
-        $response = $this->authService->register($dto);
+        $response = $this->auth_service->register($dto);
 
         $this->assertDatabaseHas('users', [
             'name' => 'John Doe',
@@ -51,11 +51,11 @@ class AuthServiceTest extends TestCase
             name: 'John Doe',
             email: 'john@example.com',
             password: 'password123',
-            passwordConfirmation: 'password123'
+            password_confirmation: 'password123'
         );
 
         $this->expectException(ValidationException::class);
-        $this->authService->register($dto);
+        $this->auth_service->register($dto);
     }
 
     public function test_register_throws_exception_for_password_mismatch(): void
@@ -64,11 +64,11 @@ class AuthServiceTest extends TestCase
             name: 'John Doe',
             email: 'john@example.com',
             password: 'password123',
-            passwordConfirmation: 'different_password'
+            password_confirmation: 'different_password'
         );
 
         $this->expectException(ValidationException::class);
-        $this->authService->register($dto);
+        $this->auth_service->register($dto);
     }
 
     public function test_login_succeeds_with_valid_credentials(): void
@@ -83,7 +83,7 @@ class AuthServiceTest extends TestCase
             password: 'password123'
         );
 
-        $response = $this->authService->login($dto);
+        $response = $this->auth_service->login($dto);
 
         $this->assertEquals($user->id, $response->user->id);
         $this->assertEquals($user->email, $response->user->email);
@@ -102,12 +102,12 @@ class AuthServiceTest extends TestCase
         );
 
         $this->expectException(ValidationException::class);
-        $this->authService->login($dto);
+        $this->auth_service->login($dto);
     }
 
     public function test_user_returns_null_when_not_authenticated(): void
     {
-        $user = $this->authService->user();
+        $user = $this->auth_service->user();
         $this->assertNull($user);
     }
 
@@ -116,10 +116,10 @@ class AuthServiceTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $userDto = $this->authService->user();
+        $user_dto = $this->auth_service->user();
 
-        $this->assertNotNull($userDto);
-        $this->assertEquals($user->id, $userDto->id);
-        $this->assertEquals($user->email, $userDto->email);
+        $this->assertNotNull($user_dto);
+        $this->assertEquals($user->id, $user_dto->id);
+        $this->assertEquals($user->email, $user_dto->email);
     }
 }

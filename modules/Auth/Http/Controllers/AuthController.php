@@ -15,7 +15,7 @@ class AuthController extends Controller
 {
     use ApiResponse;
     public function __construct(
-        private readonly AuthServiceInterface $authService
+        private readonly AuthServiceInterface $auth_service
     ) {}
 
     /**
@@ -32,7 +32,7 @@ class AuthController extends Controller
 
         try {
             $dto = RegisterRequestDTO::fromArray($validated);
-            $response = $this->authService->register($dto);
+            $response = $this->auth_service->register($dto);
 
             return $this->successResponse(
                 'User registered successfully',
@@ -57,7 +57,7 @@ class AuthController extends Controller
 
         try {
             $dto = LoginRequestDTO::fromArray($validated);
-            $response = $this->authService->login($dto);
+            $response = $this->auth_service->login($dto);
 
             return $this->successResponse(
                 'User logged in successfully',
@@ -77,7 +77,7 @@ class AuthController extends Controller
      */
     public function logout(): JsonResponse
     {
-        $this->authService->logout();
+        $this->auth_service->logout();
 
         return $this->successResponse('User logged out successfully');
     }
@@ -87,7 +87,7 @@ class AuthController extends Controller
      */
     public function user(): JsonResponse
     {
-        $user = $this->authService->user();
+        $user = $this->auth_service->user();
 
         if (!$user) {
             return $this->unauthorizedResponse('User not authenticated');
@@ -105,7 +105,7 @@ class AuthController extends Controller
     public function refresh(): JsonResponse
     {
         try {
-            $response = $this->authService->refresh();
+            $response = $this->auth_service->refresh();
 
             return $this->successResponse(
                 'Token refreshed successfully',

@@ -10,9 +10,9 @@ class UserResponseDTO
         public readonly int $id,
         public readonly string $name,
         public readonly string $email,
-        public readonly ?string $emailVerifiedAt,
-        public readonly string $createdAt,
-        public readonly string $updatedAt
+        public readonly ?string $email_verified_at,
+        public readonly string $created_at,
+        public readonly string $updated_at
     ) {}
 
     public static function fromModel(User $user): self
@@ -21,9 +21,9 @@ class UserResponseDTO
             id: $user->id,
             name: $user->name,
             email: $user->email,
-            emailVerifiedAt: $user->email_verified_at?->toISOString(),
-            createdAt: $user->created_at->toISOString(),
-            updatedAt: $user->updated_at->toISOString()
+            email_verified_at: $user->email_verified_at?->toISOString(),
+            created_at: $user->created_at->toISOString(),
+            updated_at: $user->updated_at->toISOString()
         );
     }
 
@@ -33,9 +33,9 @@ class UserResponseDTO
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'email_verified_at' => $this->emailVerifiedAt,
-            'created_at' => $this->createdAt,
-            'updated_at' => $this->updatedAt,
+            'email_verified_at' => $this->email_verified_at,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

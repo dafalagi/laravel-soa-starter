@@ -40,7 +40,7 @@ class DTOTest extends TestCase
         $this->assertEquals('John Doe', $dto->name);
         $this->assertEquals('john@example.com', $dto->email);
         $this->assertEquals('password123', $dto->password);
-        $this->assertEquals('password123', $dto->passwordConfirmation);
+        $this->assertEquals('password123', $dto->password_confirmation);
     }
 
     public function test_user_response_dto_from_model(): void

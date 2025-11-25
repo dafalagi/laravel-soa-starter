@@ -8,7 +8,7 @@ class RegisterRequestDTO
         public readonly string $name,
         public readonly string $email,
         public readonly string $password,
-        public readonly string $passwordConfirmation
+        public readonly string $password_confirmation
     ) {}
 
     public static function fromArray(array $data): self
@@ -17,7 +17,7 @@ class RegisterRequestDTO
             name: $data['name'] ?? '',
             email: $data['email'] ?? '',
             password: $data['password'] ?? '',
-            passwordConfirmation: $data['password_confirmation'] ?? ''
+            password_confirmation: $data['password_confirmation'] ?? ''
         );
     }
 
@@ -27,7 +27,7 @@ class RegisterRequestDTO
             'name' => $this->name,
             'email' => $this->email,
             'password' => $this->password,
-            'password_confirmation' => $this->passwordConfirmation,
+            'password_confirmation' => $this->password_confirmation,
         ];
     }
 }

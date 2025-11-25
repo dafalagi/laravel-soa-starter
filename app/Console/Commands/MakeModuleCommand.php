@@ -195,7 +195,7 @@ class {$moduleName}Controller extends Controller
     use ApiResponse;
 
     public function __construct(
-        private readonly {$moduleName}ServiceInterface \${$routePrefix}Service
+        private readonly {$moduleName}ServiceInterface \${$routePrefix}_service
     ) {}
 
     /**
