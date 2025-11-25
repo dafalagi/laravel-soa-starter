@@ -38,7 +38,7 @@ class AuthControllerTest extends TestCase
                 ],
             ]);
 
-        $this->assertDatabaseHas('users', [
+        $this->assertDatabaseHas('auth_users', [
             'name' => 'John Doe',
             'email' => 'john@example.com',
         ]);

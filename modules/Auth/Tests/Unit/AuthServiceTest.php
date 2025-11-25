@@ -34,7 +34,7 @@ class AuthServiceTest extends TestCase
 
         $response = $this->auth_service->register($dto);
 
-        $this->assertDatabaseHas('users', [
+        $this->assertDatabaseHas('auth_users', [
             'name' => 'John Doe',
             'email' => 'john@example.com',
         ]);

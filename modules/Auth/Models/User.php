@@ -12,6 +12,9 @@ class User extends Authenticatable
     /** @use HasModularFactory<\Modules\Auth\Database\Factories\UserFactory> */
     use HasModularFactory, Notifiable;
 
+    protected $table = 'auth_users';
+    protected $guarded = ['id'];
+
     /**
      * The attributes that are mass assignable.
      *
