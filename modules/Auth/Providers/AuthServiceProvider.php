@@ -27,6 +27,11 @@ class AuthServiceProvider extends ServiceProvider
         
         // Load module migrations
         $this->loadMigrations();
+        
+        // Register module commands
+        if ($this->app->runningInConsole()) {
+            $this->registerCommands();
+        }
     }
 
     /**
@@ -44,8 +49,18 @@ class AuthServiceProvider extends ServiceProvider
      */
     private function loadMigrations(): void
     {
-        if (is_dir(__DIR__ . '/../Database/Migrations')) {
-            $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+        $migrationPath = __DIR__ . '/../Database/Migrations';
+        if (is_dir($migrationPath)) {
+            $this->loadMigrationsFrom($migrationPath);
         }
+    }
+
+    /**
+     * Register module commands.
+     */
+    private function registerCommands(): void
+    {
+        // Register any module-specific commands here
+        // $this->commands([]);
     }
 }

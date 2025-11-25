@@ -1,14 +1,14 @@
 <?php
 
-namespace Database\Factories;
+namespace Modules\Auth\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Modules\Auth\Models\User;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Modules\Auth\Models\User>
- * @deprecated This factory is deprecated. Use Modules\Auth\Database\Factories\UserFactory instead.
+ * @extends Factory<User>
  */
 class UserFactory extends Factory
 {
@@ -17,11 +17,12 @@ class UserFactory extends Factory
      *
      * @var class-string<\Illuminate\Database\Eloquent\Model>
      */
-    protected $model = \Modules\Auth\Models\User::class;
+    protected $model = User::class;
+
     /**
      * The current password being used by the factory.
      */
-    protected static ?string $password;
+    protected static ?string $password = null;
 
     /**
      * Define the model's default state.
@@ -46,6 +47,16 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Set a specific password for the factory.
+     */
+    public function withPassword(string $password): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'password' => Hash::make($password),
         ]);
     }
 }

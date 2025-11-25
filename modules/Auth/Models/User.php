@@ -3,23 +3,14 @@
 namespace Modules\Auth\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\HasModularFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
-
-    /**
-     * Create a new factory instance for the model.
-     */
-    protected static function newFactory()
-    {
-        return new UserFactory();
-    }
+    /** @use HasModularFactory<\Modules\Auth\Database\Factories\UserFactory> */
+    use HasModularFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.

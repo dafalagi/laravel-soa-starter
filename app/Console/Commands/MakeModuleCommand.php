@@ -53,6 +53,10 @@ class MakeModuleCommand extends Command
         $this->createDTO($modulePath, $moduleName, $moduleNamespace);
         $this->createRoutes($modulePath, $moduleName);
         $this->createTest($modulePath, $moduleName, $moduleNamespace);
+        $this->createMigration($modulePath, $moduleName, $moduleNamespace);
+        $this->createFactory($modulePath, $moduleName, $moduleNamespace);
+        $this->createSeeder($modulePath, $moduleName, $moduleNamespace);
+        $this->createModel($modulePath, $moduleName, $moduleNamespace);
 
         $this->info("Module {$moduleName} created successfully!");
         $this->info("Don't forget to register the service provider in bootstrap/providers.php:");
@@ -72,6 +76,9 @@ class MakeModuleCommand extends Command
             'Services/Contracts',
             'Tests/Feature',
             'Tests/Unit',
+            'Database/Migrations',
+            'Database/Factories',
+            'Database/Seeders',
         ];
 
         foreach ($directories as $directory) {
@@ -488,6 +495,149 @@ class {$moduleName}ControllerTest extends TestCase
                 'message',
             ]);
     }
+}
+";
+    }
+
+    private function createMigration(string $modulePath, string $moduleName, string $moduleNamespace): void
+    {
+        $content = $this->getMigrationStub($moduleName, $moduleNamespace);
+        $timestamp = date('Y_m_d_His');
+        $tableName = Str::snake(Str::plural($moduleName));
+        $this->filesystem->put("{$modulePath}/Database/Migrations/{$timestamp}_create_{$tableName}_table.php", $content);
+    }
+
+    private function createFactory(string $modulePath, string $moduleName, string $moduleNamespace): void
+    {
+        $content = $this->getFactoryStub($moduleName, $moduleNamespace);
+        $this->filesystem->put("{$modulePath}/Database/Factories/{$moduleName}Factory.php", $content);
+    }
+
+    private function createSeeder(string $modulePath, string $moduleName, string $moduleNamespace): void
+    {
+        $content = $this->getSeederStub($moduleName, $moduleNamespace);
+        $this->filesystem->put("{$modulePath}/Database/Seeders/{$moduleName}Seeder.php", $content);
+    }
+
+    private function createModel(string $modulePath, string $moduleName, string $moduleNamespace): void
+    {
+        $content = $this->getModelStub($moduleName, $moduleNamespace);
+        $this->filesystem->put("{$modulePath}/Models/{$moduleName}.php", $content);
+    }
+
+    private function getMigrationStub(string $moduleName, string $moduleNamespace): string
+    {
+        $tableName = Str::snake(Str::plural($moduleName));
+        return "<?php
+
+use Illuminate\\Database\\Migrations\\Migration;
+use Illuminate\\Database\\Schema\\Blueprint;
+use Illuminate\\Support\\Facades\\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('{$tableName}', function (Blueprint \$table) {
+            \$table->id();
+            \$table->string('name');
+            \$table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('{$tableName}');
+    }
+};
+";
+    }
+
+    private function getFactoryStub(string $moduleName, string $moduleNamespace): string
+    {
+        return "<?php
+
+namespace {$moduleNamespace}\\Database\\Factories;
+
+use Illuminate\\Database\\Eloquent\\Factories\\Factory;
+use {$moduleNamespace}\\Models\\{$moduleName};
+
+/**
+ * @extends Factory<{$moduleName}>
+ */
+class {$moduleName}Factory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var class-string<\\Illuminate\\Database\\Eloquent\\Model>
+     */
+    protected \$model = {$moduleName}::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'name' => fake()->name(),
+        ];
+    }
+}
+";
+    }
+
+    private function getSeederStub(string $moduleName, string $moduleNamespace): string
+    {
+        return "<?php
+
+namespace {$moduleNamespace}\\Database\\Seeders;
+
+use Illuminate\\Database\\Seeder;
+use {$moduleNamespace}\\Models\\{$moduleName};
+
+class {$moduleName}Seeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        {$moduleName}::factory()->count(10)->create();
+    }
+}
+";
+    }
+
+    private function getModelStub(string $moduleName, string $moduleNamespace): string
+    {
+        return "<?php
+
+namespace {$moduleNamespace}\\Models;
+
+use App\\Traits\\HasModularFactory;
+use Illuminate\\Database\\Eloquent\\Model;
+
+class {$moduleName} extends Model
+{
+    use HasModularFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected \$fillable = [
+        'name',
+    ];
 }
 ";
     }
