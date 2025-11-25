@@ -14,8 +14,8 @@ class AuthSeeder extends Seeder
     {
         // Create a default admin user
         User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
+            'name' => 'Master Admin',
+            'email' => 'masteradmin@example.com',
             'email_verified_at' => now(),
         ]);
 
