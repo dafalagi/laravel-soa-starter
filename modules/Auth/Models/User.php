@@ -48,4 +48,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Check if user account is active.
+     */
+    public function isActive(): bool
+    {
+        // For now, all users are considered active
+        // This can be extended to check account status, suspension, etc.
+        return true;
+    }
 }

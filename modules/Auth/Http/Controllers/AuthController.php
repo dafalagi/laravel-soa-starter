@@ -9,13 +9,22 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Modules\Auth\DTOs\LoginRequestDTO;
 use Modules\Auth\DTOs\RegisterRequestDTO;
-use Modules\Auth\Services\Contracts\AuthServiceInterface;
+use Modules\Auth\Services\Auth\Contracts\LoginServiceInterface;
+use Modules\Auth\Services\Auth\Contracts\LogoutServiceInterface;
+use Modules\Auth\Services\Auth\Contracts\RefreshTokenServiceInterface;
+use Modules\Auth\Services\Auth\Contracts\RegisterServiceInterface;
+use Modules\Auth\Services\User\Contracts\GetCurrentUserServiceInterface;
 
 class AuthController extends Controller
 {
     use ApiResponse;
+    
     public function __construct(
-        private readonly AuthServiceInterface $auth_service
+        private readonly RegisterServiceInterface $register_service,
+        private readonly LoginServiceInterface $login_service,
+        private readonly LogoutServiceInterface $logout_service,
+        private readonly RefreshTokenServiceInterface $refresh_token_service,
+        private readonly GetCurrentUserServiceInterface $get_current_user_service
     ) {}
 
     /**
@@ -23,16 +32,9 @@ class AuthController extends Controller
      */
     public function register(Request $request): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['required', 'string', 'min:8'],
-            'password_confirmation' => ['required', 'string', 'same:password'],
-        ]);
-
         try {
-            $dto = RegisterRequestDTO::fromArray($validated);
-            $response = $this->auth_service->register($dto);
+            $dto = RegisterRequestDTO::fromArray($request->all());
+            $response = $this->register_service->execute($dto);
 
             return $this->successResponse(
                 'User registered successfully',
@@ -49,15 +51,9 @@ class AuthController extends Controller
      */
     public function login(Request $request): JsonResponse
     {
-        $validated = $request->validate([
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
-            'remember' => ['boolean'],
-        ]);
-
         try {
-            $dto = LoginRequestDTO::fromArray($validated);
-            $response = $this->auth_service->login($dto);
+            $dto = LoginRequestDTO::fromArray($request->all());
+            $response = $this->login_service->execute($dto);
 
             return $this->successResponse(
                 'User logged in successfully',
@@ -77,7 +73,7 @@ class AuthController extends Controller
      */
     public function logout(): JsonResponse
     {
-        $this->auth_service->logout();
+        $this->logout_service->execute();
 
         return $this->successResponse('User logged out successfully');
     }
@@ -87,7 +83,7 @@ class AuthController extends Controller
      */
     public function user(): JsonResponse
     {
-        $user = $this->auth_service->user();
+        $user = $this->get_current_user_service->execute();
 
         if (!$user) {
             return $this->unauthorizedResponse('User not authenticated');
@@ -105,7 +101,7 @@ class AuthController extends Controller
     public function refresh(): JsonResponse
     {
         try {
-            $response = $this->auth_service->refresh();
+            $response = $this->refresh_token_service->execute();
 
             return $this->successResponse(
                 'Token refreshed successfully',
