@@ -6,17 +6,17 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Modules\Auth\DTOs\AuthResponseDTO;
-use Modules\Auth\DTOs\RegisterRequestDTO;
+use Modules\Auth\DTOs\RegisterUserRequestDTO;
 use Modules\Auth\DTOs\UserResponseDTO;
 use Modules\Auth\Models\User;
-use Modules\Auth\Services\Auth\Contracts\RegisterServiceInterface;
+use Modules\Auth\Services\Auth\Contracts\RegisterUserServiceInterface;
 
-class RegisterService implements RegisterServiceInterface
+class RegisterUserService implements RegisterUserServiceInterface
 {
     /**
      * Register a new user.
      */
-    public function execute(RegisterRequestDTO $dto): AuthResponseDTO
+    public function execute(RegisterUserRequestDTO $dto): AuthResponseDTO
     {
         $this->prepare($dto);
 
@@ -35,7 +35,7 @@ class RegisterService implements RegisterServiceInterface
     /**
      * Prepare and validate the registration data.
      */
-    private function prepare(RegisterRequestDTO $dto): void
+    private function prepare(RegisterUserRequestDTO $dto): void
     {
         // Validate input data
         $validator = Validator::make($dto->toArray(), [

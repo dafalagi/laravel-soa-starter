@@ -6,11 +6,11 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Auth\Services\Auth\Contracts\LoginServiceInterface;
 use Modules\Auth\Services\Auth\Contracts\LogoutServiceInterface;
 use Modules\Auth\Services\Auth\Contracts\RefreshTokenServiceInterface;
-use Modules\Auth\Services\Auth\Contracts\RegisterServiceInterface;
+use Modules\Auth\Services\Auth\Contracts\RegisterUserServiceInterface;
 use Modules\Auth\Services\Auth\LoginService;
 use Modules\Auth\Services\Auth\LogoutService;
 use Modules\Auth\Services\Auth\RefreshTokenService;
-use Modules\Auth\Services\Auth\RegisterService;
+use Modules\Auth\Services\Auth\RegisterUserService;
 use Modules\Auth\Services\AuthService;
 use Modules\Auth\Services\Contracts\AuthServiceInterface;
 use Modules\Auth\Services\User\Contracts\GetCurrentUserServiceInterface;
@@ -27,7 +27,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->app->bind(AuthServiceInterface::class, AuthService::class);
         
         // Register individual auth services
-        $this->app->bind(RegisterServiceInterface::class, RegisterService::class);
+        $this->app->bind(RegisterUserServiceInterface::class, RegisterUserService::class);
         $this->app->bind(LoginServiceInterface::class, LoginService::class);
         $this->app->bind(LogoutServiceInterface::class, LogoutService::class);
         $this->app->bind(RefreshTokenServiceInterface::class, RefreshTokenService::class);

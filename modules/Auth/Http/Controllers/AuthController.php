@@ -8,11 +8,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Modules\Auth\DTOs\LoginRequestDTO;
-use Modules\Auth\DTOs\RegisterRequestDTO;
+use Modules\Auth\DTOs\RegisterUserRequestDTO;
 use Modules\Auth\Services\Auth\Contracts\LoginServiceInterface;
 use Modules\Auth\Services\Auth\Contracts\LogoutServiceInterface;
 use Modules\Auth\Services\Auth\Contracts\RefreshTokenServiceInterface;
-use Modules\Auth\Services\Auth\Contracts\RegisterServiceInterface;
+use Modules\Auth\Services\Auth\Contracts\RegisterUserServiceInterface;
 use Modules\Auth\Services\User\Contracts\GetCurrentUserServiceInterface;
 
 class AuthController extends Controller
@@ -20,7 +20,7 @@ class AuthController extends Controller
     use ApiResponse;
     
     public function __construct(
-        private readonly RegisterServiceInterface $register_service,
+        private readonly RegisterUserServiceInterface $register_service,
         private readonly LoginServiceInterface $login_service,
         private readonly LogoutServiceInterface $logout_service,
         private readonly RefreshTokenServiceInterface $refresh_token_service,
@@ -33,7 +33,7 @@ class AuthController extends Controller
     public function register(Request $request): JsonResponse
     {
         try {
-            $dto = RegisterRequestDTO::fromArray($request->all());
+            $dto = RegisterUserRequestDTO::fromArray($request->all());
             $response = $this->register_service->execute($dto);
 
             return $this->successResponse(

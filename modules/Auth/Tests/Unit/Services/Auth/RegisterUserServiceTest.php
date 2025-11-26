@@ -4,27 +4,27 @@ namespace Modules\Auth\Tests\Unit\Services\Auth;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
-use Modules\Auth\DTOs\RegisterRequestDTO;
+use Modules\Auth\DTOs\RegisterUserRequestDTO;
 use Modules\Auth\Models\User;
-use Modules\Auth\Services\Auth\RegisterService;
+use Modules\Auth\Services\Auth\RegisterUserService;
 use Tests\TestCase;
 
-class RegisterServiceTest extends TestCase
+class RegisterUserServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    private RegisterService $register_service;
+    private RegisterUserService $register_service;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->register_service = new RegisterService();
+        $this->register_service = new RegisterUserService();
     }
 
     public function test_can_register_new_user(): void
     {
         // Given valid registration data
-        $dto = new RegisterRequestDTO(
+        $dto = new RegisterUserRequestDTO(
             'John Doe',
             'john@example.com',
             'password123',
@@ -50,7 +50,7 @@ class RegisterServiceTest extends TestCase
         User::factory()->create(['email' => 'john@example.com']);
 
         // When trying to register with same email
-        $dto = new RegisterRequestDTO(
+        $dto = new RegisterUserRequestDTO(
             'John Doe',
             'john@example.com',
             'password123',
@@ -65,7 +65,7 @@ class RegisterServiceTest extends TestCase
     public function test_cannot_register_with_mismatched_passwords(): void
     {
         // When trying to register with mismatched passwords
-        $dto = new RegisterRequestDTO(
+        $dto = new RegisterUserRequestDTO(
             'John Doe',
             'john@example.com',
             'password123',

@@ -2,7 +2,7 @@
 
 namespace Modules\Auth\DTOs;
 
-class RegisterRequestDTO
+class RegisterUserRequestDTO
 {
     public function __construct(
         public readonly string $name,
