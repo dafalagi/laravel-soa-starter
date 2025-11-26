@@ -14,7 +14,7 @@ use Modules\Auth\Services\Auth\RegisterUserService;
 use Modules\Auth\Services\User\Contracts\GetUserServiceInterface;
 use Modules\Auth\Services\User\GetUserService;
 
-class AuthServiceProvider extends ServiceProvider
+class AuthModuleServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
