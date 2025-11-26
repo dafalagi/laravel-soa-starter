@@ -22,7 +22,10 @@ class LoginService implements LoginServiceInterface
     {
         $dto = $this->prepare($dto->toArray());
 
-        $user = User::where('email', $dto['email'])->first();
+        $user = User::where('email', $dto['email'])
+            ->where('is_active', true)
+            ->first();
+
         if(!$user)
             throw new \Exception("Invalid credentials", 401);
 

@@ -55,8 +55,6 @@ class User extends Authenticatable implements OAuthenticatable
      */
     public function isActive(): bool
     {
-        // For now, all users are considered active
-        // This can be extended to check account status, suspension, etc.
-        return true;
+        return $this->is_active;
     }
 }
