@@ -11,8 +11,8 @@ use Modules\Auth\Services\Auth\LoginService;
 use Modules\Auth\Services\Auth\LogoutService;
 use Modules\Auth\Services\Auth\RefreshTokenService;
 use Modules\Auth\Services\Auth\RegisterUserService;
-use Modules\Auth\Services\User\Contracts\GetCurrentUserServiceInterface;
-use Modules\Auth\Services\User\GetCurrentUserService;
+use Modules\Auth\Services\User\Contracts\GetUserServiceInterface;
+use Modules\Auth\Services\User\GetUserService;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -28,7 +28,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->app->bind(RefreshTokenServiceInterface::class, RefreshTokenService::class);
         
         /** User */
-        $this->app->bind(GetCurrentUserServiceInterface::class, GetCurrentUserService::class);
+        $this->app->bind(GetUserServiceInterface::class, GetUserService::class);
     }
 
     /**

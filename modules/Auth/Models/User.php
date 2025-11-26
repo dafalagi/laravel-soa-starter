@@ -7,11 +7,13 @@ use App\Traits\HasModularFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\Contracts\OAuthenticatable;
+use Laravel\Passport\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements OAuthenticatable
 {
     /** @use HasModularFactory<\Modules\Auth\Database\Factories\UserFactory> */
-    use HasModularFactory, Notifiable, SoftDeletes;
+    use HasModularFactory, Notifiable, SoftDeletes, HasApiTokens;
 
     protected $table = 'auth_users';
     protected $guarded = ['id'];
