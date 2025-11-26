@@ -11,8 +11,6 @@ use Modules\Auth\Services\Auth\LoginService;
 use Modules\Auth\Services\Auth\LogoutService;
 use Modules\Auth\Services\Auth\RefreshTokenService;
 use Modules\Auth\Services\Auth\RegisterUserService;
-use Modules\Auth\Services\AuthService;
-use Modules\Auth\Services\Contracts\AuthServiceInterface;
 use Modules\Auth\Services\User\Contracts\GetCurrentUserServiceInterface;
 use Modules\Auth\Services\User\GetCurrentUserService;
 
@@ -23,16 +21,13 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Register legacy auth service (for backward compatibility)
-        $this->app->bind(AuthServiceInterface::class, AuthService::class);
-        
-        // Register individual auth services
+        /** Auth */
         $this->app->bind(RegisterUserServiceInterface::class, RegisterUserService::class);
         $this->app->bind(LoginServiceInterface::class, LoginService::class);
         $this->app->bind(LogoutServiceInterface::class, LogoutService::class);
         $this->app->bind(RefreshTokenServiceInterface::class, RefreshTokenService::class);
         
-        // Register user management services
+        /** User */
         $this->app->bind(GetCurrentUserServiceInterface::class, GetCurrentUserService::class);
     }
 

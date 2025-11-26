@@ -27,18 +27,5 @@ class GetCurrentUserService implements GetCurrentUserServiceInterface
     /**
      * Prepare the get current user operation.
      */
-    private function prepare(): void
-    {
-        // Additional business logic validation can be added here
-        // For example, checking user permissions, loading additional data, etc.
-        
-        if (Auth::check()) {
-            $user = Auth::user();
-            
-            // Example: Check if user account is still valid
-            if ($user && !$user->isActive()) {
-                Auth::logout();
-            }
-        }
-    }
+    private function prepare(): void {}
 }
