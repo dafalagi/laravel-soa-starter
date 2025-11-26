@@ -29,6 +29,7 @@ class User extends Authenticatable implements OAuthenticatable
         'id',
         'password',
         'remember_token',
+        'is_active',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -47,6 +48,9 @@ class User extends Authenticatable implements OAuthenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+            'deleted_at' => 'datetime',
         ];
     }
 
