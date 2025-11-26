@@ -21,12 +21,14 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
 
+            $table->boolean('is_active')->default(true);
             $table->integer('version')->default(0);
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->integer('deleted_by')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
+            $table->integer('created_at')->nullable();
+            $table->integer('updated_at')->nullable();
+            $table->integer('deleted_at')->nullable();
 
             $table->index([
                 'id',

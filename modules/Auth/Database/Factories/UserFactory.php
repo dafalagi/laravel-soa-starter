@@ -40,10 +40,14 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
 
+            'is_active' => true,
             'version' => 0,
             'created_by' => null,
             'updated_by' => null,
             'deleted_by' => null,
+            'created_at' => time(),
+            'updated_at' => time(),
+            'deleted_at' => null,
         ];
     }
 

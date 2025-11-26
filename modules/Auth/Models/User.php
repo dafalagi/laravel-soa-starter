@@ -18,6 +18,8 @@ class User extends Authenticatable implements OAuthenticatable
     protected $table = 'auth_users';
     protected $guarded = ['id'];
 
+    public $timestamps = false;
+
     /**
      * The attributes that should be hidden for serialization.
      *

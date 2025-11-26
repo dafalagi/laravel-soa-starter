@@ -10,20 +10,26 @@ trait Audit
     public function prepareAuditStore($object)
     {
         $object->{'uuid'} = generateUuid();
+        $object->{'is_active'} = true;
         $object->{'version'} = 0;
         $object->{'created_by'}  =  Auth::user()->id ?? null;
         $object->{'updated_by'} =  Auth::user()->id ?? null;
+        $object->{'created_at'} = time();
+        $object->{'updated_at'} = time();
     }
 
     public function prepareAuditUpdate($object)
     {
         $object->{'version'} = $object->{'version'} + 1;
         $object->{'updated_by'} =  Auth::user()->id ?? null;
+        $object->{'updated_at'} = time();
     }
 
     public function prepareAuditDelete($object)
     {
+        $object->{'is_active'} = false;
         $object->{'deleted_by'} = Auth::user()->id ?? null;
+        $object->{'deleted_at'} = time();
     }
 
     public function prepareAuditRestore($object)
