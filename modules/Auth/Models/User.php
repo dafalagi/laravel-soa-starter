@@ -4,27 +4,17 @@ namespace Modules\Auth\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Traits\HasModularFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
     /** @use HasModularFactory<\Modules\Auth\Database\Factories\UserFactory> */
-    use HasModularFactory, Notifiable;
+    use HasModularFactory, Notifiable, SoftDeletes;
 
     protected $table = 'auth_users';
     protected $guarded = ['id'];
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -32,8 +22,15 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
+        'id',
         'password',
         'remember_token',
+        'created_by',
+        'updated_by',
+        'deleted_by',
+        'created_at',
+        'updated_at',
+        'deleted_at',
     ];
 
     /**
