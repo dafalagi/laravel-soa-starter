@@ -2,9 +2,8 @@
 
 namespace Modules\Auth\Services\Auth;
 
+use App\Traits\Audit;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 use Modules\Auth\DTOs\AuthResponseDTO;
 use Modules\Auth\DTOs\RegisterUserRequestDTO;
 use Modules\Auth\DTOs\UserResponseDTO;
@@ -13,54 +12,48 @@ use Modules\Auth\Services\Auth\Contracts\RegisterUserServiceInterface;
 
 class RegisterUserService implements RegisterUserServiceInterface
 {
+    use Audit;
+
     /**
      * Register a new user.
      */
     public function execute(RegisterUserRequestDTO $dto): AuthResponseDTO
     {
-        $this->prepare($dto);
+        $dto = $this->prepare($dto->toArray());
 
-        // Create user
-        $user = User::create([
-            'name' => $dto->name,
-            'email' => $dto->email,
-            'password' => Hash::make($dto->password),
-        ]);
+        $model = new User();
 
-        $user_dto = UserResponseDTO::fromModel($user);
+        $model->name = $dto['name'];
+        $model->email = $dto['email'];
+        $model->password = Hash::make($dto['password']);
 
-        return AuthResponseDTO::fromUserAndToken($user_dto);
+        $this->prepareAuditStore($model);
+        $model->save();
+
+        $user = UserResponseDTO::fromModel($model);
+
+        return AuthResponseDTO::fromUserAndToken($user);
     }
 
     /**
      * Prepare and validate the registration data.
      */
-    private function prepare(RegisterUserRequestDTO $dto): void
+    private function prepare(array $dto): array
     {
-        // Validate input data
-        $validator = Validator::make($dto->toArray(), [
+        $this->validateDto($dto);
+
+        return $dto;
+    }
+
+    /**
+     * Get validation rules for the DTO.
+     */
+    private function rules(): array
+    {
+        return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:auth_users'],
-            'password' => ['required', 'string', 'min:8'],
-            'password_confirmation' => ['required', 'string', 'same:password'],
-        ]);
-
-        if ($validator->fails()) {
-            throw new ValidationException($validator);
-        }
-
-        // Additional business logic validation
-        if (User::where('email', $dto->email)->exists()) {
-            throw ValidationException::withMessages([
-                'email' => ['The email has already been taken.'],
-            ]);
-        }
-
-        // Validate password confirmation
-        if ($dto->password !== $dto->password_confirmation) {
-            throw ValidationException::withMessages([
-                'password' => ['The password confirmation does not match.'],
-            ]);
-        }
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:auth_users,email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ];
     }
 }
