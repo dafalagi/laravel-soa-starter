@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory as BaseHasFactory;
 use Illuminate\Support\Str;
 
@@ -17,25 +16,25 @@ trait HasModularFactory
      */
     protected static function newFactory()
     {
-        $modelName = class_basename(static::class);
-        $modelNamespace = static::getModelNamespace();
+        $model_name = class_basename(static::class);
+        $model_namespace = static::getModelNamespace();
         
         // Try module-specific factory first
-        $moduleFactoryClass = static::getModuleFactoryClass($modelNamespace, $modelName);
-        if (class_exists($moduleFactoryClass)) {
-            return $moduleFactoryClass::new();
+        $module_factory_class = static::getModuleFactoryClass($model_namespace, $model_name);
+        if (class_exists($module_factory_class)) {
+            return $module_factory_class::new();
         }
 
         // Fall back to global factory if module factory doesn't exist
-        $globalFactoryClass = "Database\\Factories\\{$modelName}Factory";
-        if (class_exists($globalFactoryClass)) {
-            return $globalFactoryClass::new();
+        $global_factory_class = "Database\\Factories\\{$model_name}Factory";
+        if (class_exists($global_factory_class)) {
+            return $global_factory_class::new();
         }
 
         // If no factory exists, throw a meaningful error
         throw new \InvalidArgumentException(
-            "Unable to locate factory for model [{$modelName}]. " .
-            "Tried: [{$moduleFactoryClass}], [{$globalFactoryClass}]"
+            "Unable to locate factory for model [{$model_name}]. " .
+            "Tried: [{$module_factory_class}], [{$global_factory_class}]"
         );
     }
 
@@ -51,19 +50,19 @@ trait HasModularFactory
     /**
      * Generate the module factory class name based on model namespace.
      */
-    protected static function getModuleFactoryClass(string $modelNamespace, string $modelName): string
+    protected static function getModuleFactoryClass(string $model_namespace, string $model_name): string
     {
         // Convert Modules\Auth\Models to Modules\Auth\Database\Factories
-        if (Str::startsWith($modelNamespace, 'Modules\\')) {
+        if (Str::startsWith($model_namespace, 'Modules\\')) {
             // Extract module name (e.g., 'Auth' from 'Modules\Auth\Models')
-            $parts = explode('\\', $modelNamespace);
+            $parts = explode('\\', $model_namespace);
             if (count($parts) >= 3 && $parts[0] === 'Modules' && $parts[2] === 'Models') {
-                $moduleName = $parts[1];
-                return "Modules\\{$moduleName}\\Database\\Factories\\{$modelName}Factory";
+                $module_name = $parts[1];
+                return "Modules\\{$module_name}\\Database\\Factories\\{$model_name}Factory";
             }
         }
 
         // For non-module models, fall back to global factory
-        return "Database\\Factories\\{$modelName}Factory";
+        return "Database\\Factories\\{$model_name}Factory";
     }
 }

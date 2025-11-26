@@ -202,7 +202,7 @@ class {$moduleName}Controller extends Controller
     use ApiResponse;
 
     public function __construct(
-        private readonly {$moduleName}ServiceInterface \${$routePrefix}_service
+        private readonly {$moduleName}ServiceInterface \$service
     ) {}
 
     /**
@@ -266,7 +266,7 @@ class {$moduleName}Service implements {$moduleName}ServiceInterface
     /**
      * Get all items.
      */
-    public function getAll(): array
+    public function get_all(): array
     {
         // TODO: Implement business logic
         return [];
@@ -275,7 +275,7 @@ class {$moduleName}Service implements {$moduleName}ServiceInterface
     /**
      * Get item by ID.
      */
-    public function getById(int \$id): ?array
+    public function get_by_id(int \$id): ?array
     {
         // TODO: Implement business logic
         return null;
@@ -322,12 +322,12 @@ interface {$moduleName}ServiceInterface
     /**
      * Get all items.
      */
-    public function getAll(): array;
+    public function get_all(): array;
 
     /**
      * Get item by ID.
      */
-    public function getById(int \$id): ?array;
+    public function get_by_id(int \$id): ?array;
 
     /**
      * Create new item.
