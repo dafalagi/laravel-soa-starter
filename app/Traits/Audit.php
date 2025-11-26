@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 trait Audit
 {
@@ -36,6 +37,14 @@ trait Audit
     {
         if ($object->{'version'} != $request_version)
             throw new \Exception("Version not match, please get the latest data and try again", 409);
+    }
+
+    public function validateDto($dto)
+    {
+        $validator = Validator::make($dto, $this->rules());
+        if ($validator->fails()) {
+            throw new \Illuminate\Validation\ValidationException($validator);
+        }
     }
 
     public function restrictSoftDeletes($object)
