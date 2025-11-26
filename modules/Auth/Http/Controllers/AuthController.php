@@ -13,7 +13,7 @@ use Modules\Auth\Services\Auth\Contracts\LoginServiceInterface;
 use Modules\Auth\Services\Auth\Contracts\LogoutServiceInterface;
 use Modules\Auth\Services\Auth\Contracts\RefreshTokenServiceInterface;
 use Modules\Auth\Services\Auth\Contracts\RegisterUserServiceInterface;
-use Modules\Auth\Services\User\Contracts\GetCurrentUserServiceInterface;
+use Modules\Auth\Services\User\Contracts\GetUserServiceInterface;
 
 class AuthController extends Controller
 {
@@ -24,7 +24,7 @@ class AuthController extends Controller
         private readonly LoginServiceInterface $login_service,
         private readonly LogoutServiceInterface $logout_service,
         private readonly RefreshTokenServiceInterface $refresh_token_service,
-        private readonly GetCurrentUserServiceInterface $get_current_user_service
+        private readonly GetUserServiceInterface $get_user_service
     ) {}
 
     /**
@@ -81,9 +81,9 @@ class AuthController extends Controller
     /**
      * Get authenticated user.
      */
-    public function user(): JsonResponse
+    public function user(Request $request): JsonResponse
     {
-        $user = $this->get_current_user_service->execute();
+        $user = $this->get_user_service->execute($request->all());
 
         if (!$user) {
             return $this->unauthorizedResponse('User not authenticated');

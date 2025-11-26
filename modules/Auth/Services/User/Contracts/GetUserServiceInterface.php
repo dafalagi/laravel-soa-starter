@@ -4,10 +4,10 @@ namespace Modules\Auth\Services\User\Contracts;
 
 use Modules\Auth\DTOs\UserResponseDTO;
 
-interface GetCurrentUserServiceInterface
+interface GetUserServiceInterface
 {
     /**
      * Get the authenticated user.
      */
-    public function execute(): ?UserResponseDTO;
+    public function execute(array $dto): array;
 }
