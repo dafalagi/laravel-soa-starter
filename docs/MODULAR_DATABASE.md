@@ -18,7 +18,7 @@ modules/ModuleName/Database/
 ```
 modules/Auth/Database/
 ├── Migrations/
-│   └── 2024_01_01_000001_create_users_table.php
+│   └── 2024_01_01_000001_create_auth_users_table.php
 ├── Factories/
 │   └── UserFactory.php
 └── Seeders/
@@ -28,9 +28,10 @@ modules/Auth/Database/
 ## Benefits
 
 ### ✅ **Separation of Concerns**
-- Each module manages its own database schema
+- Each module manages its own database schema with prefixed tables
 - Changes to one module don't affect others
-- Clear ownership of database tables
+- Clear ownership and visual grouping of database tables
+- Easy identification of module ownership in DB management tools
 
 ### ✅ **Portability**
 - Modules can be easily moved between projects
@@ -55,10 +56,12 @@ php artisan make:module ModuleName
 ```
 
 This creates a complete module structure including:
-- Migration file with basic table structure
-- Model with proper factory reference
+- Migration file with prefixed table structure
+- Model with proper factory reference and table name
 - Factory for test data generation
 - Seeder for database seeding
+
+**Note**: The generator automatically applies appropriate table prefixes based on the module name.
 
 ### Module Service Provider
 Each module's service provider automatically:
@@ -118,9 +121,24 @@ $user = User::factory()->create();
 ## Migration Naming Convention
 
 Module migrations follow this pattern:
-- **File**: `{timestamp}_create_{table_name}_table.php`
-- **Class**: `CreateUsersTable` (follows Laravel conventions)
-- **Table**: Uses module's domain (e.g., `users`, `products`, `orders`)
+- **File**: `{timestamp}_create_{prefix}_{table_name}_table.php`
+- **Class**: `CreateAuthUsersTable` (follows Laravel conventions with prefix)
+- **Table**: Uses module prefix + table name (e.g., `auth_users`, `prd_products`, `ord_orders`)
+
+### Table Prefix Guidelines
+
+Each module should use a **short, clear prefix** for its database tables to provide better organization in database management tools (Navicat, phpMyAdmin, etc.):
+
+- **Auth Module**: `auth_` prefix → `auth_users`, `auth_tokens`, `auth_permissions`
+- **Product Module**: `prd_` prefix → `prd_products`, `prd_categories`, `prd_reviews`
+- **Order Module**: `ord_` prefix → `ord_orders`, `ord_items`, `ord_payments`
+- **Content Module**: `cnt_` prefix → `cnt_posts`, `cnt_comments`, `cnt_media`
+
+**Prefix Selection Rules:**
+- Keep it **3-4 characters** for brevity
+- Maintain **clarity** - should be easily recognizable
+- Use **lowercase** with underscore separator
+- **No strict rules** - prioritize readability and team understanding
 
 ## Factory Conventions
 
@@ -150,7 +168,8 @@ class UserFactory extends Factory
 ### ✅ **DO**
 - Keep module migrations in the module's Database/Migrations directory
 - Use module-specific factories and seeders
-- Name tables according to the module's domain
+- Apply consistent table prefixes for better organization
+- Name tables with clear, short prefixes (3-4 characters)
 - Include all database-related files in the module
 
 ### ❌ **DON'T**
@@ -158,6 +177,8 @@ class UserFactory extends Factory
 - Create cross-module database dependencies in migrations
 - Reference other modules' factories directly
 - Put shared database files in global directories
+- Use generic table names without prefixes
+- Make prefixes too long or unclear
 
 ## Migration Dependencies
 
@@ -189,4 +210,27 @@ $user = User::factory()->create();          // Uses Auth/Database/Factories/User
 $admin = User::factory()->admin()->create(); // Uses custom factory states
 ```
 
-This modular approach ensures that each module is self-contained while maintaining the benefits of a monolithic deployment.
+## Database Organization Benefits
+
+With prefixed tables, your database management tools will show organized table groups:
+
+```
+Database Tables:
+├── auth_users
+├── auth_tokens  
+├── auth_permissions
+├── prd_products
+├── prd_categories
+├── prd_reviews
+├── ord_orders
+├── ord_items
+└── ord_payments
+```
+
+This **visual grouping** makes it much easier to:
+- Identify which module owns which tables
+- Navigate large databases with many modules
+- Perform module-specific database operations
+- Debug and maintain individual modules
+
+This modular approach ensures that each module is self-contained while maintaining the benefits of a monolithic deployment and organized database structure.
