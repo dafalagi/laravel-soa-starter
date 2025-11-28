@@ -24,10 +24,10 @@ class LoginService extends BaseService implements LoginServiceInterface
             ->where('is_active', true)
             ->first();
 
-        if(!$user)
+        if (!$user)
             throw new \Exception(__('auth::auth.login.invalid_credentials'), 401);
 
-        if(Hash::check($dto['password'], $user->password) == false)
+        if (Hash::check($dto['password'], $user->password) == false)
             throw new \Exception(__('auth::auth.login.invalid_credentials'), 401);
 
         $token = $user->createToken("user_token")->accessToken;
