@@ -31,7 +31,6 @@ This starter template provides a solid foundation for building scalable, maintai
 - **Modular Test Structure** - Tests organized per module
 - **Comprehensive Test Coverage** - Unit and feature tests included
 - **Factory Discovery System** - Automatic model factory resolution
-- **Snake Case Convention** - Consistent variable naming throughout
 
 ### 🗄️ **Database Architecture**  
 - **Module-Specific Databases** - Each module manages its own migrations, factories, seeders
@@ -41,7 +40,7 @@ This starter template provides a solid foundation for building scalable, maintai
 ### 🎨 **Developer Experience**
 - **Intelligent Code Generation** - Consistent patterns across generated code
 - **Rich Documentation** - Comprehensive guides and architectural documentation  
-- **Snake Case Consistency** - All generated code follows snake_case conventions
+- **Naming Conventions Consistency** - All generated code follows snake_case conventions for variables and camelCase for methods (except tests)
 - **Clean Architecture** - Clear separation between controllers, services, and models
 
 ## 📁 **Project Structure**
