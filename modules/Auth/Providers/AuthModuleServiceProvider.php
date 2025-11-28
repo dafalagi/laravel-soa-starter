@@ -66,9 +66,9 @@ class AuthModuleServiceProvider extends ServiceProvider
      */
     private function loadMigrations(): void
     {
-        $migrationPath = __DIR__ . '/../Database/Migrations';
-        if (is_dir($migrationPath)) {
-            $this->loadMigrationsFrom($migrationPath);
+        $migration_path = __DIR__ . '/../Database/Migrations';
+        if (is_dir($migration_path)) {
+            $this->loadMigrationsFrom($migration_path);
         }
     }
 
