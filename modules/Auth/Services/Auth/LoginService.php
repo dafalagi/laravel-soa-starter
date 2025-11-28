@@ -25,16 +25,16 @@ class LoginService extends BaseService implements LoginServiceInterface
             ->first();
 
         if(!$user)
-            throw new \Exception("Invalid credentials", 401);
+            throw new \Exception(__('auth::auth.login.invalid_credentials'), 401);
 
         if(Hash::check($dto['password'], $user->password) == false)
-            throw new \Exception("Invalid credentials", 401);
+            throw new \Exception(__('auth::auth.login.invalid_credentials'), 401);
 
         $token = $user->createToken("user_token")->accessToken;
         $user = UserResponseDTO::fromModel($user);
 
         $this->results['data'] = AuthResponseDTO::fromUserAndToken($user, $token);
-        $this->results['message'] = 'User logged in successfully.';
+        $this->results['message'] = __('auth::auth.login.success');
     }
 
     private function prepare(array $dto): array

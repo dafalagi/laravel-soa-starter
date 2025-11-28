@@ -25,7 +25,7 @@ class BaseService
 
     public function execute(mixed $dto, bool $sub_service = false): array
     {
-        $this->results = ['status_code' => 200, 'error' => null, 'message' => null, 'data' => null];
+        $this->results = ['status_code' => 200, 'errors' => null, 'message' => null, 'data' => null];
 
         if (!$sub_service) {
             DB::beginTransaction();
@@ -55,7 +55,7 @@ class BaseService
                     $this->results['status_code'] = 500;
                 }
 
-                $this->results['error'] = $ex;
+                $this->results['errors'] = $ex->getTrace();
 
                 if (env('APP_ENV') == 'local') {
                     $this->results['message'] = 'Caught exception: "' . $ex->getMessage() . '" on line ' . $ex->getLine() . ' of ' . $ex->getFile();
