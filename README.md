@@ -70,7 +70,6 @@ This starter template provides a solid foundation for building scalable, maintai
 │       └── Tests/                         # Module tests
 ├── docs/
 │   ├── MODULAR_DATABASE.md              # Database architecture guide
-│   └── REFACTORED_SERVICES.md           # Service architecture documentation
 └── README.md
 ```
 
