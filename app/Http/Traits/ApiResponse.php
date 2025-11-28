@@ -7,6 +7,29 @@ use Illuminate\Http\JsonResponse;
 trait ApiResponse
 {
     /**
+     * Return a JSON response based on the status code.
+     */
+    protected function response(
+        array $response,
+    ): JsonResponse {
+        $status_code = $response['status_code'] ?? 200;
+
+        if ($status_code >= 200 && $status_code < 300) {
+            return $this->successResponse(
+                $response['message'] ?? 'Success',
+                $response['data'] ?? null,
+                $status_code
+            );
+        } else {
+            return $this->errorResponse(
+                $response['message'] ?? 'Error',
+                $response['errors'] ?? null,
+                $status_code
+            );
+        }
+    }
+
+    /**
      * Return a success JSON response.
      */
     protected function successResponse(

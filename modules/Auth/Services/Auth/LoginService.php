@@ -2,25 +2,23 @@
 
 namespace Modules\Auth\Services\Auth;
 
-use App\Traits\Audit;
-use Illuminate\Support\Facades\Auth;
+use App\Services\BaseService;
 use Illuminate\Support\Facades\Hash;
 use Modules\Auth\DTOs\AuthResponseDTO;
-use Modules\Auth\DTOs\LoginRequestDTO;
 use Modules\Auth\DTOs\UserResponseDTO;
 use Modules\Auth\Models\User;
 use Modules\Auth\Services\Auth\Contracts\LoginServiceInterface;
 
-class LoginService implements LoginServiceInterface
+class LoginService extends BaseService implements LoginServiceInterface
 {
-    use Audit;
-
-    /**
-     * Login user with credentials.
-     */
-    public function execute(LoginRequestDTO $dto): AuthResponseDTO
+    public function execute(mixed $dto, bool $sub_service = false): array
     {
-        $dto = $this->prepare($dto->toArray());
+        return parent::execute($dto->toArray(), $sub_service);
+    }
+
+    protected function process(mixed $dto): void
+    {
+        $dto = $this->prepare($dto);
 
         $user = User::where('email', $dto['email'])
             ->where('is_active', true)
@@ -35,25 +33,21 @@ class LoginService implements LoginServiceInterface
         $token = $user->createToken("user_token")->accessToken;
         $user = UserResponseDTO::fromModel($user);
 
-        return AuthResponseDTO::fromUserAndToken($user, $token);
+        $this->results['data'] = AuthResponseDTO::fromUserAndToken($user, $token);
+        $this->results['message'] = 'User logged in successfully.';
     }
 
-    /**
-     * Prepare and validate the login data.
-     */
     private function prepare(array $dto): array
     {
-        $this->validateDto($dto);
-
         return $dto;
     }
 
-    private function rules(): array
+    protected function rules(): array
     {
         return [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
-            'remember' => ['boolean'],
+            'remember' => ['required', 'boolean'],
         ];
     }
 }

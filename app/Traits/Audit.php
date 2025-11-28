@@ -45,14 +45,6 @@ trait Audit
             throw new \Exception("Version not match, please get the latest data and try again", 409);
     }
 
-    public function validateDto($dto)
-    {
-        $validator = Validator::make($dto, $this->rules());
-        if ($validator->fails()) {
-            throw new \Illuminate\Validation\ValidationException($validator);
-        }
-    }
-
     public function restrictSoftDeletes($object)
     {
         if (method_exists($object, 'getRestrictOnDeleteRelations')) {

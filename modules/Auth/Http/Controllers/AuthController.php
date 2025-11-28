@@ -49,21 +49,10 @@ class AuthController extends Controller
      */
     public function login(Request $request): JsonResponse
     {
-        try {
-            $dto = LoginRequestDTO::fromArray($request->all());
-            $response = $this->login_service->execute($dto);
+        $dto = LoginRequestDTO::fromArray($request->all());
+        $response = $this->login_service->execute($dto);
 
-            return $this->successResponse(
-                'User logged in successfully',
-                $response->toArray()
-            );
-        } catch (ValidationException $e) {
-            return $this->errorResponse(
-                'Authentication failed',
-                $e->errors(),
-                401
-            );
-        }
+        return $this->response($response);
     }
 
     /**
