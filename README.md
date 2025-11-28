@@ -1,59 +1,268 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏗️ Laravel SOA Starter
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="https://img.shields.io/badge/Laravel-12.x-red?style=flat-square&logo=laravel" alt="Laravel Version">
+  <img src="https://img.shields.io/badge/PHP-8.3+-blue?style=flat-square&logo=php" alt="PHP Version">
+  <img src="https://img.shields.io/badge/Architecture-Modular%20SOA-green?style=flat-square" alt="Architecture">
+  <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="License">
 </p>
 
-## About Laravel
+A **Service-Oriented Architecture (SOA)** starter template built on Laravel 12, featuring a **modular monolith** design pattern with comprehensive service layer architecture, automated factory discovery, and enterprise-grade patterns.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🎯 **Project Vision**
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+This starter template provides a solid foundation for building scalable, maintainable Laravel applications using SOA principles and modular architecture. It emphasizes clean separation of concerns, testability, and developer productivity through intelligent code generation and consistent patterns.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## ✨ **Key Features**
 
-## Learning Laravel
+### 🏛️ **Modular Architecture**
+- **Modular Monolith Design** - Self-contained modules with clear boundaries
+- **Service-Oriented Architecture** - Business logic encapsulated in dedicated services  
+- **Module Generator** - `php artisan make:module` command for rapid development
+- **Automatic Module Discovery** - Routes, migrations, and services auto-registered
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 🔧 **Advanced Service Layer**
+- **BaseService Pattern** - Consistent transaction handling and error management
+- **Single Responsibility Services** - Each service handles one specific action
+- **Comprehensive Validation** - Request validation moved to service layer
+- **Standardized Response Format** - Uniform API responses across all endpoints
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 🧪 **Testing & Quality**
+- **Modular Test Structure** - Tests organized per module
+- **Comprehensive Test Coverage** - Unit and feature tests included
+- **Factory Discovery System** - Automatic model factory resolution
+- **Snake Case Convention** - Consistent variable naming throughout
 
-## Laravel Sponsors
+### 🗄️ **Database Architecture**  
+- **Module-Specific Databases** - Each module manages its own migrations, factories, seeders
+- **Automatic Factory Discovery** - `HasModularFactory` trait eliminates boilerplate
+- **Migration Organization** - Clear separation of database concerns per module
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 🎨 **Developer Experience**
+- **Intelligent Code Generation** - Consistent patterns across generated code
+- **Rich Documentation** - Comprehensive guides and architectural documentation  
+- **Snake Case Consistency** - All generated code follows snake_case conventions
+- **Clean Architecture** - Clear separation between controllers, services, and models
 
-### Premium Partners
+## 📁 **Project Structure**
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```
+├── app/
+│   ├── Console/Commands/
+│   │   └── MakeModuleCommand.php          # Module generator command
+│   ├── Services/
+│   │   └── BaseService.php                # Base service with common functionality
+│   ├── Http/Traits/
+│   │   └── ApiResponse.php                # Standardized API responses
+│   └── Traits/
+│       └── HasModularFactory.php          # Automatic factory discovery
+├── modules/
+│   └── Auth/                              # Example Auth module
+│       ├── DTOs/                          # Data Transfer Objects
+│       ├── Http/Controllers/              # HTTP layer
+│       ├── Services/                      # Business logic layer
+│       │   ├── Auth/                      # Authentication services
+│       │   └── User/                      # User management services
+│       ├── Models/                        # Eloquent models
+│       ├── Database/                      # Module-specific database files
+│       │   ├── Migrations/
+│       │   ├── Factories/
+│       │   └── Seeders/
+│       └── Tests/                         # Module tests
+├── docs/
+│   ├── MODULAR_DATABASE.md              # Database architecture guide
+│   └── REFACTORED_SERVICES.md           # Service architecture documentation
+└── README.md
+```
 
-## Contributing
+## 🚀 **Getting Started**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Prerequisites
+- PHP 8.3+
+- Composer
+- Laravel 12.x
+- SQLite/MySQL/PostgreSQL
 
-## Code of Conduct
+### Installation
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/laravel-soa-starter.git
+   cd laravel-soa-starter
+   ```
 
-## Security Vulnerabilities
+2. **Install dependencies**
+   ```bash
+   composer install
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+3. **Environment setup**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-## License
+4. **Database setup**
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+5. **Run the application**
+   ```bash
+   php artisan serve
+   ```
+
+### Creating Your First Module
+
+Generate a new module with all necessary files:
+
+```bash
+php artisan make:module Product
+```
+
+This creates a complete module structure with:
+- Controllers with CRUD operations
+- Service layer with validation
+- DTOs for data transfer
+- Models with factory discovery
+- Database migrations, factories, seeders
+- Feature and unit tests
+- API routes
+
+## 🏗️ **Architecture Patterns**
+
+### Service Layer Architecture
+```php
+// Each service extends BaseService for consistency
+class CreateProductService extends BaseService
+{
+    protected function rules(): array
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+        ];
+    }
+    
+    protected function process(mixed $dto): void
+    {
+        // Business logic here
+        $product = Product::create($dto);
+        $this->results['data'] = ProductResponseDTO::fromModel($product);
+    }
+}
+```
+
+### Modular Factory Discovery
+```php
+// Models automatically discover their factories
+class Product extends Model
+{
+    use HasModularFactory; // Automatically finds Modules\Product\Database\Factories\ProductFactory
+}
+```
+
+### Standardized API Responses
+```php
+// Controllers use consistent response formatting
+public function store(Request $request): JsonResponse
+{
+    $dto = CreateProductRequestDTO::fromArray($request->all());
+    $response = $this->create_product_service->execute($dto);
+    
+    return $this->response($response); // Auto-handles success/error based on status code
+}
+```
+
+## 📊 **Current Status**
+
+- ✅ **Core Architecture** - Modular SOA foundation complete
+- ✅ **Auth Module** - Complete authentication system with JWT
+- ✅ **Service Layer** - BaseService pattern with comprehensive error handling  
+- ✅ **Module Generator** - Automated code generation for new modules
+- ✅ **Factory Discovery** - Automatic model factory resolution
+- ✅ **Testing Framework** - Modular test structure with comprehensive coverage
+
+## 🗺️ **Roadmap & Future Plans**
+
+### Phase 1: Core Enhancements (Q1 2025)
+- [ ] **API Rate Limiting** - Comprehensive rate limiting per module/endpoint
+- [ ] **Caching Layer** - Redis-based caching with cache tags per module
+- [ ] **Event System** - Module-to-module communication via events
+- [ ] **Permission System** - Role-based access control (RBAC)
+
+### Phase 2: Advanced Features (Q2 2025)
+- [ ] **API Versioning** - Support for multiple API versions
+- [ ] **Queue System** - Background job processing per module
+- [ ] **File Management** - File upload/storage service with cloud support
+- [ ] **Notification System** - Multi-channel notifications (email, SMS, push)
+
+### Phase 3: DevOps & Monitoring (Q3 2025)
+- [ ] **Docker Support** - Complete containerization setup
+- [ ] **CI/CD Pipeline** - GitHub Actions for automated testing and deployment
+- [ ] **Monitoring & Logging** - Comprehensive application monitoring
+- [ ] **Performance Optimization** - Database query optimization and caching strategies
+
+### Phase 4: Enterprise Features (Q4 2025)
+- [ ] **Multi-tenancy** - SaaS-ready tenant isolation
+- [ ] **Microservice Migration Path** - Tools to split modules into microservices
+- [ ] **API Gateway** - Centralized API management and routing
+- [ ] **Distributed Tracing** - Request tracing across modules
+
+## 🤝 **Contributing**
+
+We welcome contributions! Please see our [contributing guidelines](CONTRIBUTING.md) for details.
+
+### Development Setup
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 🧪 **Testing**
+
+Run the test suite:
+```bash
+# Run all tests
+vendor/bin/phpunit
+
+# Run specific module tests
+vendor/bin/phpunit modules/Auth/Tests/
+
+# Run with coverage
+vendor/bin/phpunit --coverage-html coverage/
+```
+
+## 📚 **Documentation**
+
+- [Modular Database Architecture](docs/MODULAR_DATABASE.md)
+- [Service Layer Patterns](docs/REFACTORED_SERVICES.md)
+- [API Documentation](docs/API.md) *(Coming Soon)*
+
+## 🙏 **Acknowledgments**
+
+Special thanks to the following developers for their inspiration, suggestions, and contributions to this project:
+
+- **[@lazuardy347](https://github.com/lazuardy347)** - For architectural insights and design pattern suggestions
+- **[@praneshaw](https://github.com/praneshaw)** - For modular design pattern inspiration and feedback
+- **[@dimasaprasetyo](https://github.com/dimasaprasetyo)** - For helpful libraries, packages, and tools recommendations.
+
+Their expertise and guidance have been invaluable in shaping this project's architecture and implementation.
+
+## 📄 **License**
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 💡 **Support**
+
+- 📧 **Email**: [your-email@example.com](mailto:dafarizky34@gmail.com)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/dafalagi/laravel-soa-starter/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/dafalagi/laravel-soa-starter/discussions)
+
+---
+
+<p align="center">
+  <strong>Built with ❤️ using Laravel and modern PHP practices</strong>
+</p>
