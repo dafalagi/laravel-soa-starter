@@ -186,25 +186,25 @@ public function store(Request $request): JsonResponse
 
 ## 🗺️ **Roadmap & Future Plans**
 
-### Phase 1: Core Enhancements (Q1 2025)
+### Phase 1: Core Enhancements
 - [ ] **API Rate Limiting** - Comprehensive rate limiting per module/endpoint
 - [ ] **Caching Layer** - Redis-based caching with cache tags per module
 - [ ] **Event System** - Module-to-module communication via events
 - [ ] **Permission System** - Role-based access control (RBAC)
 
-### Phase 2: Advanced Features (Q2 2025)
+### Phase 2: Advanced Features
 - [ ] **API Versioning** - Support for multiple API versions
 - [ ] **Queue System** - Background job processing per module
 - [ ] **File Management** - File upload/storage service with cloud support
 - [ ] **Notification System** - Multi-channel notifications (email, SMS, push)
 
-### Phase 3: DevOps & Monitoring (Q3 2025)
+### Phase 3: DevOps & Monitoring
 - [ ] **Docker Support** - Complete containerization setup
 - [ ] **CI/CD Pipeline** - GitHub Actions for automated testing and deployment
 - [ ] **Monitoring & Logging** - Comprehensive application monitoring
 - [ ] **Performance Optimization** - Database query optimization and caching strategies
 
-### Phase 4: Enterprise Features (Q4 2025)
+### Phase 4: Enterprise Features
 - [ ] **Multi-tenancy** - SaaS-ready tenant isolation
 - [ ] **Microservice Migration Path** - Tools to split modules into microservices
 - [ ] **API Gateway** - Centralized API management and routing
