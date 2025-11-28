@@ -42,6 +42,9 @@ class AuthModuleServiceProvider extends ServiceProvider
         // Load module migrations
         $this->loadMigrations();
         
+        // Load module translations
+        $this->loadTranslations();
+        
         // Register module commands
         if ($this->app->runningInConsole()) {
             $this->registerCommands();
@@ -66,6 +69,17 @@ class AuthModuleServiceProvider extends ServiceProvider
         $migrationPath = __DIR__ . '/../Database/Migrations';
         if (is_dir($migrationPath)) {
             $this->loadMigrationsFrom($migrationPath);
+        }
+    }
+
+    /**
+     * Load module translations.
+     */
+    private function loadTranslations(): void
+    {
+        $translation_path = __DIR__ . '/../Resources/lang';
+        if (is_dir($translation_path)) {
+            $this->loadTranslationsFrom($translation_path, 'auth');
         }
     }
 

@@ -57,6 +57,7 @@ class MakeModuleCommand extends Command
         $this->createFactory($modulePath, $moduleName, $moduleNamespace);
         $this->createSeeder($modulePath, $moduleName, $moduleNamespace);
         $this->createModel($modulePath, $moduleName, $moduleNamespace);
+        $this->createTranslations($modulePath, $moduleName);
 
         $this->info("Module {$moduleName} created successfully!");
         $this->info("Don't forget to register the service provider in bootstrap/providers.php:");
@@ -79,6 +80,7 @@ class MakeModuleCommand extends Command
             'Database/Migrations',
             'Database/Factories',
             'Database/Seeders',
+            'Resources/lang/en',
         ];
 
         foreach ($directories as $directory) {
@@ -159,6 +161,9 @@ class {$moduleName}ServiceProvider extends ServiceProvider
         
         // Load module migrations if they exist
         \$this->loadMigrations();
+        
+        // Load module translations
+        \$this->loadTranslations();
     }
 
     /**
@@ -178,6 +183,17 @@ class {$moduleName}ServiceProvider extends ServiceProvider
     {
         if (is_dir(__DIR__ . '/../Database/Migrations')) {
             \$this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+        }
+    }
+
+    /**
+     * Load module translations.
+     */
+    private function loadTranslations(): void
+    {
+        \$translationPath = __DIR__ . '/../Resources/lang';
+        if (is_dir(\$translationPath)) {
+            \$this->loadTranslationsFrom(\$translationPath, '" . strtolower($moduleName) . "');
         }
     }
 }
@@ -639,6 +655,55 @@ class {$moduleName} extends Model
         'name',
     ];
 }
+";
+    }
+
+    private function createTranslations(string $modulePath, string $moduleName): void
+    {
+        $moduleKey = strtolower($moduleName);
+        $content = $this->getTranslationStub($moduleName, $moduleKey);
+        $this->filesystem->put("{$modulePath}/Resources/lang/en/{$moduleKey}.php", $content);
+    }
+
+    private function getTranslationStub(string $moduleName, string $moduleKey): string
+    {
+        return "<?php
+
+return [
+    /*
+    |--------------------------------------------------------------------------
+    | {$moduleName} Module Language Lines
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines are used by the {$moduleName} module for various
+    | messages that we need to display to the user. You are free to modify
+    | these language lines according to your application's requirements.
+    |
+    */
+
+    'operations' => [
+        'created' => '{$moduleName} created successfully.',
+        'updated' => '{$moduleName} updated successfully.',
+        'deleted' => '{$moduleName} deleted successfully.',
+        'retrieved' => '{$moduleName} retrieved successfully.',
+        'not_found' => '{$moduleName} not found.',
+        'create_failed' => 'Failed to create {$moduleKey}.',
+        'update_failed' => 'Failed to update {$moduleKey}.',
+        'delete_failed' => 'Failed to delete {$moduleKey}.',
+    ],
+
+    'validation' => [
+        'name_required' => 'Name is required.',
+        'name_max' => 'Name may not be greater than 255 characters.',
+        'invalid_data' => 'The provided data is invalid.',
+    ],
+
+    'errors' => [
+        'service_unavailable' => '{$moduleName} service is temporarily unavailable.',
+        'unauthorized' => 'You are not authorized to perform this action.',
+        'forbidden' => 'Access forbidden.',
+    ],
+];
 ";
     }
 }
