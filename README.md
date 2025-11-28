@@ -257,7 +257,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 💡 **Support**
 
-- 📧 **Email**: [your-email@example.com](mailto:dafarizky34@gmail.com)
+- 📧 **Email**: [dafarizky34@gmail.com](mailto:dafarizky34@gmail.com)
 - 🐛 **Issues**: [GitHub Issues](https://github.com/dafalagi/laravel-soa-starter/issues)
 - 💬 **Discussions**: [GitHub Discussions](https://github.com/dafalagi/laravel-soa-starter/discussions)
 
