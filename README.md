@@ -40,7 +40,7 @@ This starter template provides a solid foundation for building scalable, maintai
 ### 🎨 **Developer Experience**
 - **Intelligent Code Generation** - Consistent patterns across generated code
 - **Rich Documentation** - Comprehensive guides and architectural documentation  
-- **Naming Conventions Consistency** - All generated code follows snake_case conventions for variables and camelCase for methods (except tests)
+- **Naming Conventions Consistency** - All generated code follows snake_case conventions for variables and camelCase conventions for methods (except tests)
 - **Clean Architecture** - Clear separation between controllers, services, and models
 
 ## 📁 **Project Structure**
