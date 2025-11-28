@@ -81,7 +81,7 @@ This starter template provides a solid foundation for building scalable, maintai
 - PHP 8.3+
 - Composer
 - Laravel 12.x
-- SQLite/MySQL/PostgreSQL
+- PostgreSQL (preferably)/MySQL/SQLite
 
 ### Installation
 
