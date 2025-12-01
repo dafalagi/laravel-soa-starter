@@ -2,6 +2,7 @@
 
 namespace Modules\Auth\Services\User;
 
+use App\Rules\ExistsUuid;
 use App\Services\BaseService;
 use Modules\Auth\DTOs\User\Responses\UserResponseDTO;
 use Modules\Auth\Models\User;
@@ -48,5 +49,12 @@ class GetUserService extends BaseService implements GetUserServiceInterface
         $dto['sort_type'] = $dto['sort_type'] ?? 'desc';
 
         return $dto;
+    }
+
+    protected function rules(array $dto): array
+    {
+        return [
+            'user_uuid' => ['nullable', new ExistsUuid(new User())],
+        ];
     }
 }
