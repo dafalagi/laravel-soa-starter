@@ -9,5 +9,5 @@ interface GetUserServiceInterface
     /**
      * Get user(s) based on the provided criteria.
      */
-    public function execute(UserRequestDTO $dto): array;
+    public function execute(UserRequestDTO $dto, bool $sub_service = false): array;
 }
