@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Database;
 
 use Illuminate\Console\Command;
 
@@ -11,14 +11,14 @@ class MigrateFresh extends Command
      *
      * @var string
      */
-    protected $signature = 'app:migrate-fresh';
+    protected $signature = 'db:migrate-fresh';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Run migrate:fresh and set up Passport';
 
     /**
      * Execute the console command.
