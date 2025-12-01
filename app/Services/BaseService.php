@@ -32,9 +32,8 @@ class BaseService
 
             try {
                 $validator = Validator::make($dto, $this->rules());
-                if ($validator->fails()) {
+                if ($validator->fails())
                     throw new ValidationException($validator);
-                }
                 
                 $this->process($dto);
 
@@ -51,23 +50,25 @@ class BaseService
                 $this->results['status_code'] = $ex->getCode() == 0 ? 500 : $ex->getCode() ;
                 $original_status_code = $this->results['status_code'];
 
-                if (strlen((string) $this->results['status_code']) > 3) {
+                if (strlen((string) $this->results['status_code']) > 3)
                     $this->results['status_code'] = 500;
-                }
 
                 $this->results['errors'] = $ex->getTrace();
 
                 if (env('APP_ENV') == 'local') {
                     $this->results['message'] = 'Caught exception: "' . $ex->getMessage() . '" on line ' . $ex->getLine() . ' of ' . $ex->getFile();
 
-                    if (strlen((string) $original_status_code) > 3) {
+                    if (strlen((string) $original_status_code) > 3)
                         $this->results['message'] .= ' (Original response code: ' . $original_status_code . ')';
-                    }
                 } else {
                     $this->results['message'] = $ex->getMessage();
                 }
             }
         } else {
+            $validator = Validator::make($dto, $this->rules());
+            if ($validator->fails())
+                throw new ValidationException($validator);
+
             $this->process($dto);
         }
 
