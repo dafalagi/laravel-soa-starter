@@ -18,7 +18,8 @@ trait ApiResponse
             return $this->successResponse(
                 $response['message'] ?? 'Success',
                 $response['data'] ?? null,
-                $status_code
+                $status_code,
+                $response['pagination'] ?? null
             );
         } else {
             return $this->errorResponse(
@@ -35,16 +36,19 @@ trait ApiResponse
     protected function successResponse(
         string $message = 'Success',
         mixed $data = null,
-        int $status_code = 200
+        int $status_code = 200,
+        ?array $pagination = null
     ): JsonResponse {
         $response = [
             'success' => true,
             'message' => $message,
         ];
 
-        if ($data !== null) {
+        if ($data !== null)
             $response['data'] = $data;
-        }
+
+        if ($pagination !== null)
+            $response['pagination'] = $pagination;
 
         return response()->json($response, $status_code);
     }
@@ -62,9 +66,8 @@ trait ApiResponse
             'message' => $message,
         ];
 
-        if ($errors !== null) {
+        if ($errors !== null)
             $response['errors'] = $errors;
-        }
 
         return response()->json($response, $status_code);
     }
