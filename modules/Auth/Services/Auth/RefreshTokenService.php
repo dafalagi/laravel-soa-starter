@@ -5,7 +5,7 @@ namespace Modules\Auth\Services\Auth;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
 use Modules\Auth\DTOs\AuthResponseDTO;
-use Modules\Auth\DTOs\UserResponseDTO;
+use Modules\Auth\DTOs\User\Responses\UserResponseDTO;
 use Modules\Auth\Services\Auth\Contracts\RefreshTokenServiceInterface;
 
 class RefreshTokenService implements RefreshTokenServiceInterface
