@@ -103,45 +103,25 @@ Each generated form request includes:
 namespace Modules\{Module}\Http\Requests\Api\{Client}\{Feature};
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class {Request}Request extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
     public function authorize(): bool
     {
         return true;
     }
 
-    public function rules(): array
+    /**
+     * Prepare the data for validation.
+     */
+    public function prepareForValidation(): void
     {
-        return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'name.required' => __('module::feature.validation.name_required'),
-            // ... more custom messages
-        ];
-    }
-
-    public function attributes(): array
-    {
-        return [
-            'name' => __('module::feature.attributes.name'),
-            // ... more custom attributes
-        ];
-    }
-
-    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
-    {
-        throw new \Illuminate\Validation\ValidationException($validator, response()->json([
-            'message' => __('module::feature.validation.invalid_data'),
-            'errors' => $validator->errors(),
-        ], 422));
+        // $this->merge([
+        //     'key' => $this->route('key'),
+        // ]);
     }
 }
 ```
@@ -150,11 +130,9 @@ class {Request}Request extends FormRequest
 
 - **Form Request Base**: Extends `FormRequest` for automatic validation
 - **Authorization**: Ready-to-use authorize method (defaults to true)
-- **Validation Rules**: Sample rules with common field types
-- **Custom Messages**: Integrated with modular localization system
-- **Custom Attributes**: Localized field attribute names
-- **JSON Error Response**: Custom failed validation handling for API responses
-- **Translation Integration**: Uses module-specific translation keys
+- **Data Preparation**: `prepareForValidation()` method for pre-processing request data
+- **Clean Structure**: Minimal boilerplate, ready for customization
+- **Route Parameter Access**: Example of accessing route parameters in preparation method
 
 ## Generated Components
 
@@ -166,66 +144,60 @@ public function authorize(): bool
 }
 ```
 
-### 2. Validation Rules
+### 2. Data Preparation Method
+```php
+public function prepareForValidation(): void
+{
+    // $this->merge([
+    //     'key' => $this->route('key'),
+    // ]);
+}
+```
+
+The generated request provides a clean foundation where you can add:
+- **Validation Rules**: Add `rules()` method as needed
+- **Custom Messages**: Add `messages()` method for localized error messages
+- **Field Attributes**: Add `attributes()` method for field name translation
+- **Data Transformation**: Use `prepareForValidation()` to modify request data before validation
+
+## Customization
+
+The generated request provides a minimal structure that you can extend as needed:
+
+### Adding Validation Rules
 ```php
 public function rules(): array
 {
     return [
         'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'email', 'max:255'],
+        'email' => ['required', 'email', 'unique:users'],
+        // Add your validation rules here
     ];
 }
 ```
 
-### 3. Custom Error Messages
+### Adding Custom Messages (Optional)
 ```php
 public function messages(): array
 {
     return [
         'name.required' => __('auth::user.validation.name_required'),
-        'email.required' => __('auth::user.validation.email_required'),
+        'email.unique' => __('auth::user.validation.email_unique'),
+        // Add custom messages with modular localization
     ];
 }
 ```
 
-### 4. Field Attributes
+### Data Preparation Examples
 ```php
-public function attributes(): array
+public function prepareForValidation(): void
 {
-    return [
-        'name' => __('auth::user.attributes.name'),
-        'email' => __('auth::user.attributes.email'),
-    ];
+    $this->merge([
+        'user_id' => $this->route('user'),
+        'slug' => Str::slug($this->name),
+        'formatted_phone' => $this->formatPhoneNumber($this->phone),
+    ]);
 }
-```
-
-### 5. JSON Error Response
-```php
-protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
-{
-    throw new \Illuminate\Validation\ValidationException($validator, response()->json([
-        'message' => __('auth::user.validation.invalid_data'),
-        'errors' => $validator->errors(),
-    ], 422));
-}
-```
-
-## Translation Integration
-
-Generated requests automatically integrate with the modular localization system:
-
-### Translation Keys Format
-- **Messages**: `{module}::{feature}.validation.{field}_{rule}`
-- **Attributes**: `{module}::{feature}.attributes.{field}`
-- **General**: `{module}::{feature}.validation.invalid_data`
-
-### Example Translation Keys
-```php
-// For Auth module, User feature
-'auth::user.validation.name_required'
-'auth::user.validation.email_invalid'
-'auth::user.attributes.name'
-'auth::user.attributes.email'
 ```
 
 ## Validation & Error Handling
@@ -249,18 +221,32 @@ Generated requests can be easily integrated with controllers:
 
 ```php
 // In your controller
-use Modules\Auth\Http\Requests\Api\Admin\User\UserStoreRequest;
+use Modules\Auth\Http\Requests\Api\Admin\User\GetUserRequest;
 
 class UserController extends ApiController
 {
-    public function store(UserStoreRequest $request): JsonResponse
+    public function index(GetUserRequest $request): JsonResponse
     {
-        // Request is automatically validated
-        $validated_data = $request->validated();
+        // Request is automatically authorized and prepared
+        // Add validation rules to the request class as needed
+        $data = $request->all();
         
         // Your business logic here
-        return $this->response(['message' => 'User created successfully']);
+        return $this->response(['data' => $data]);
     }
+}
+```
+
+### Adding Validation Rules Later
+```php
+// In your generated request class
+public function rules(): array
+{
+    return [
+        'page' => ['integer', 'min:1'],
+        'per_page' => ['integer', 'min:1', 'max:100'],
+        'search' => ['string', 'max:255'],
+    ];
 }
 ```
 

@@ -72,9 +72,7 @@ class MakeRequestCommand extends Command
         $content = $this->getRequestStub(
             $request_name,
             $module_namespace,
-            $feature_namespace,
-            $module_name,
-            $feature_name
+            $feature_namespace
         );
 
         // Create request file
@@ -88,19 +86,13 @@ class MakeRequestCommand extends Command
     private function getRequestStub(
         string $request_name,
         string $module_namespace,
-        string $feature_namespace,
-        string $module_name,
-        string $feature_name
+        string $feature_namespace
     ): string {
-        $module_key = strtolower($module_name);
-        $feature_key = Str::snake($feature_name);
-
         return "<?php
 
 namespace {$module_namespace}\\Http\\Requests\\{$feature_namespace};
 
 use Illuminate\\Foundation\\Http\\FormRequest;
-use Illuminate\\Validation\\Rule;
 
 class {$request_name} extends FormRequest
 {
@@ -113,63 +105,13 @@ class {$request_name} extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \\Illuminate\\Contracts\\Validation\\ValidationRule|array<mixed>|string>
+     * Prepare the data for validation.
      */
-    public function rules(): array
+    public function prepareForValidation(): void
     {
-        return [
-            // TODO: Add validation rules here
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-        ];
-    }
-
-    /**
-     * Get custom validation messages.
-     *
-     * @return array<string, string>
-     */
-    public function messages(): array
-    {
-        return [
-            'name.required' => __('{$module_key}::{$feature_key}.validation.name_required'),
-            'name.string' => __('{$module_key}::{$feature_key}.validation.name_string'),
-            'name.max' => __('{$module_key}::{$feature_key}.validation.name_max'),
-            'email.required' => __('{$module_key}::{$feature_key}.validation.email_required'),
-            'email.email' => __('{$module_key}::{$feature_key}.validation.email_invalid'),
-            'email.max' => __('{$module_key}::{$feature_key}.validation.email_max'),
-        ];
-    }
-
-    /**
-     * Get custom attributes for validator errors.
-     *
-     * @return array<string, string>
-     */
-    public function attributes(): array
-    {
-        return [
-            'name' => __('{$module_key}::{$feature_key}.attributes.name'),
-            'email' => __('{$module_key}::{$feature_key}.attributes.email'),
-        ];
-    }
-
-    /**
-     * Handle a failed validation attempt.
-     *
-     * @param  \\Illuminate\\Contracts\\Validation\\Validator  \$validator
-     * @return void
-     *
-     * @throws \\Illuminate\\Validation\\ValidationException
-     */
-    protected function failedValidation(\\Illuminate\\Contracts\\Validation\\Validator \$validator)
-    {
-        throw new \\Illuminate\\Validation\\ValidationException(\$validator, response()->json([
-            'message' => __('{$module_key}::{$feature_key}.validation.invalid_data'),
-            'errors' => \$validator->errors(),
-        ], 422));
+        // \$this->merge([
+        //     'key' => \$this->route('key'),
+        // ]);
     }
 }
 ";
