@@ -2,12 +2,12 @@
 
 namespace Modules\Auth\Services\User\Contracts;
 
-use Modules\Auth\DTOs\UserResponseDTO;
+use Modules\Auth\DTOs\User\Requests\UserRequestDTO;
 
 interface GetUserServiceInterface
 {
     /**
-     * Get the authenticated user.
+     * Get user(s) based on the provided criteria.
      */
-    public function execute(array $dto): array;
+    public function execute(UserRequestDTO $dto): array;
 }

@@ -2,19 +2,19 @@
 
 namespace Modules\Auth\Services\User;
 
-use App\Traits\Pagination;
-use Modules\Auth\DTOs\UserResponseDTO;
+use App\Services\BaseService;
+use Modules\Auth\DTOs\User\Responses\UserResponseDTO;
 use Modules\Auth\Models\User;
 use Modules\Auth\Services\User\Contracts\GetUserServiceInterface;
 
-class GetUserService implements GetUserServiceInterface
+class GetUserService extends BaseService implements GetUserServiceInterface
 {
-    use Pagination;
+    public function execute(mixed $dto, bool $sub_service = false): array
+    {
+        return parent::execute($dto->toArray(), $sub_service);
+    }
 
-    /**
-     * Get the authenticated user.
-     */
-    public function execute(array $dto): array
+    protected function process(mixed $dto): void
     {
         $dto = $this->prepare($dto);
 
@@ -28,24 +28,18 @@ class GetUserService implements GetUserServiceInterface
             $model->where('uuid', $dto['user_uuid']);
             $data = $model->first();
         } else {
-            if (isset($dto['with_pagination'])) {
-                $results['pagination'] = $this->paginationDetail($dto['per_page'], $dto['page'], $model->count());
+            if ($dto['with_pagination'] === true) {
+                $this->results['pagination'] = $this->paginationDetail($dto['per_page'], $dto['page'], $model->count());
                 $model = $this->paginateData($model, $dto['per_page'], $dto['page']);
             }
 
             $data = $model->get();
         }
 
-        return [
-            'message' => 'User successfully fetched.',
-            'data' => UserResponseDTO::fromModel($data)->toArray(),
-            'pagination' => $results['pagination'] ?? null,
-        ];
+        $this->results['data'] = UserResponseDTO::fromCollection($data);
+        $this->results['message'] = __('auth::user.get.success');
     }
 
-    /**
-     * Prepare the get user operation.
-     */
     private function prepare(array $dto): array
     {
         $dto['per_page'] = $dto['per_page'] ?? 10;
