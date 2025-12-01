@@ -22,7 +22,6 @@ class AuthModuleServiceProvider extends ServiceProvider
     public function register(): void
     {
         /** Auth */
-        $this->app->bind(RegisterUserServiceInterface::class, RegisterUserService::class);
         $this->app->bind(LoginServiceInterface::class, LoginService::class);
         $this->app->bind(LogoutServiceInterface::class, LogoutService::class);
         $this->app->bind(RefreshTokenServiceInterface::class, RefreshTokenService::class);
