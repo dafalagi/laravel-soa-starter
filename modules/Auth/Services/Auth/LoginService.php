@@ -5,7 +5,7 @@ namespace Modules\Auth\Services\Auth;
 use App\Services\BaseService;
 use Illuminate\Support\Facades\Hash;
 use Modules\Auth\DTOs\AuthResponseDTO;
-use Modules\Auth\DTOs\UserResponseDTO;
+use Modules\Auth\DTOs\User\Responses\UserResponseDTO;
 use Modules\Auth\Models\User;
 use Modules\Auth\Services\Auth\Contracts\LoginServiceInterface;
 
@@ -16,7 +16,7 @@ class LoginService extends BaseService implements LoginServiceInterface
         return parent::execute($dto->toArray(), $sub_service);
     }
 
-    protected function process(mixed $dto): void
+    protected function process(array $dto): void
     {
         $dto = $this->prepare($dto);
 
@@ -42,7 +42,7 @@ class LoginService extends BaseService implements LoginServiceInterface
         return $dto;
     }
 
-    protected function rules(): array
+    protected function rules(array $dto): array
     {
         return [
             'email' => ['required', 'string', 'email'],
