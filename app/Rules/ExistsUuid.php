@@ -6,6 +6,7 @@ use App\Models\BaseModel;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Uuid;
 
 class ExistsUuid implements ValidationRule
 {
@@ -25,7 +26,6 @@ class ExistsUuid implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-
         if (!$this->table instanceof \Illuminate\Database\Eloquent\Model and !$this->table instanceof BaseModel) {
             $this->table = DB::table($this->table);
         }
@@ -33,8 +33,30 @@ class ExistsUuid implements ValidationRule
         if (strpos($value, ',') !== false) {
             $splitted_value = explode(',', $value);
 
+            if (empty($value)) {
+                $fail(__('validation.custom.uuid.is_empty'));
+                return;
+            }
+            
+            foreach ($splitted_value as $uuid) {
+                if (!Uuid::isValid($uuid)) {
+                    $fail(__('validation.custom.uuid.not_valid'));
+                    return;
+                }
+            }
+
             $query = $this->table->whereIn('uuid', $splitted_value);
         } else {
+            if (empty($value)) {
+                $fail(__('validation.custom.uuid.is_empty'));
+                return;
+            }
+
+            if (!Uuid::isValid($value)) {
+                $fail(__('validation.custom.uuid.not_valid'));
+                return;
+            }
+
             $query = $this->table->where('uuid', $value);
         }
 

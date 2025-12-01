@@ -26,7 +26,6 @@ class ExistsId implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-
         if (!$this->table instanceof \Illuminate\Database\Eloquent\Model and !$this->table instanceof BaseModel) {
             $this->table = DB::table($this->table);
         }
@@ -34,8 +33,30 @@ class ExistsId implements ValidationRule
         if (strpos($value, ',') !== false) {
             $splitted_value = explode(',', $value);
 
+            if (empty($value)) {
+                $fail(__('validation.custom.id.is_empty'));
+                return;
+            }
+
+            foreach ($splitted_value as $id) {
+                if (!is_numeric($id)) {
+                    $fail(__('validation.custom.id.not_valid'));
+                    return;
+                }
+            }
+
             $query = $this->table->whereIn('id', $splitted_value);
         } else {
+            if (empty($value)) {
+                $fail(__('validation.custom.id.is_empty'));
+                return;
+            }
+
+            if (!is_numeric($value)) {
+                $fail(__('validation.custom.id.not_valid'));
+                return;
+            }
+
             $query = $this->table->where('id', $value);
         }
 

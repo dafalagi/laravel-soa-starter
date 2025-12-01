@@ -180,9 +180,13 @@ return [
     'custom' => [
         'uuid' => [
             'not_exists' => 'UUID not found.',
+            'not_valid' => 'UUID is not valid.',
+            'is_empty' => 'UUID field is empty.',
         ],
         'id' => [
             'not_exists' => 'ID not found.',
+            'not_valid' => 'ID is not valid.',
+            'is_empty' => 'ID field is empty.',
         ],
     ],
 
