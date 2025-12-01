@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Auth\Http\Controllers\Api\Admin\User;
+namespace Modules\Auth\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;

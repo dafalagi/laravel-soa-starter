@@ -10,7 +10,6 @@ class MakeControllerCommand extends Command
 {
     protected $signature = 'make:controller 
                            {module : The module name}
-                           {feature : The feature name}
                            {controller : The controller name}
                            {client : The client name (Web/Admin/Mobile)}';
 
@@ -27,7 +26,6 @@ class MakeControllerCommand extends Command
     public function handle(): int
     {
         $module_name = Str::studly($this->argument('module'));
-        $feature_name = Str::studly($this->argument('feature'));
         $controller_name = Str::studly($this->argument('controller'));
         $client = Str::studly($this->argument('client'));
 
@@ -52,12 +50,7 @@ class MakeControllerCommand extends Command
             return 1;
         }
 
-        // Ensure feature directory exists
-        $feat_path = "{$module_path}/Http/Controllers/Api/{$client}/{$feature_name}";
-        if (!$this->filesystem->isDirectory($feat_path))
-            $this->filesystem->makeDirectory($feat_path, 0755, true);
-
-        $controller_path = "{$module_path}/Http/Controllers/Api/{$client}/{$feature_name}/{$controller_name}.php";
+        $controller_path = "{$module_path}/Http/Controllers/Api/{$client}/{$controller_name}.php";
 
         // Check if controller already exists
         if ($this->filesystem->exists($controller_path)) {
@@ -67,11 +60,11 @@ class MakeControllerCommand extends Command
 
         // Generate controller content
         $module_namespace = "Modules\\{$module_name}";
-        $feature_namespace = "Api\\{$client}\\{$feature_name}";
+        $client_namespace = "Api\\{$client}";
         $content = $this->getControllerStub(
             $controller_name, 
             $module_namespace,
-            $feature_namespace,
+            $client_namespace,
         );
 
         // Create controller file
@@ -85,7 +78,7 @@ class MakeControllerCommand extends Command
     private function getControllerStub(
         string $controller_name, 
         string $module_namespace, 
-        string $feature_namespace,
+        string $client_namespace,
     ): string {
         $base_controller = 'ApiController';
         $constructor = '';
@@ -119,7 +112,7 @@ class MakeControllerCommand extends Command
 
         return "<?php
 
-namespace {$module_namespace}\\Http\\Controllers\\{$feature_namespace};
+namespace {$module_namespace}\\Http\\Controllers\\{$client_namespace};
 
 use App\\Http\\Controllers\\{$base_controller};
 use Illuminate\\Http\\JsonResponse;

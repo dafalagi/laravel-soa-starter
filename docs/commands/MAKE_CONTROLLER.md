@@ -1,11 +1,11 @@
 # Make Controller Command
 
-The `make:controller` command generates a new controller in a specific module with a structured approach to organize API controllers by client type and feature.
+The `make:controller` command generates a new controller in a specific module with a structured approach to organize API controllers by client type.
 
 ## Command Signature
 
 ```bash
-php artisan make:controller {module} {feature} {controller} {client}
+php artisan make:controller {module} {controller} {client}
 ```
 
 ## Arguments
@@ -13,13 +13,12 @@ php artisan make:controller {module} {feature} {controller} {client}
 | Argument | Description | Example |
 |----------|-------------|---------|
 | `module` | The module name where the controller will be created | `Auth`, `Product`, `Order` |
-| `feature` | The feature name for organizing controllers | `Authentication`, `User`, `Profile` |
-| `controller` | The controller name | `Login`, `Register`, `UserProfile` |
+| `controller` | The controller name | `User`, `Product`, `Order`, `Authentication` |
 | `client` | The client type (Web/Admin/Mobile) | `Web`, `Admin`, `Mobile` |
 
 ## Generated Structure
 
-Controllers are organized in a hierarchical structure within each module:
+Controllers are organized by client type within each module:
 
 ```
 modules/
@@ -28,70 +27,62 @@ modules/
         └── Controllers/
             └── Api/
                 ├── Web/
-                │   └── {Feature}/
-                │       └── {Controller}Controller.php
+                │   └── {Controller}Controller.php
                 ├── Admin/
-                │   └── {Feature}/
-                │       └── {Controller}Controller.php
+                │   └── {Controller}Controller.php
                 └── Mobile/
-                    └── {Feature}/
-                        └── {Controller}Controller.php
+                    └── {Controller}Controller.php
 ```
 
 ## Usage Examples
 
-### Authentication Controllers
+### Authentication Module Controllers
 
 ```bash
-# Admin login controller
-php artisan make:controller Auth Authentication Login Admin
+# Admin authentication controller
+php artisan make:controller Auth Authentication Admin
 
-# Web registration controller  
-php artisan make:controller Auth Authentication Register Web
+# Web authentication controller  
+php artisan make:controller Auth Authentication Web
 
-# Mobile password reset controller
-php artisan make:controller Auth Authentication PasswordReset Mobile
+# Mobile authentication controller
+php artisan make:controller Auth Authentication Mobile
+
+# User management controllers
+php artisan make:controller Auth User Admin
+php artisan make:controller Auth User Web
+php artisan make:controller Auth User Mobile
 ```
 
 **Generated paths:**
-- `modules/Auth/Http/Controllers/Api/Admin/Authentication/LoginController.php`
-- `modules/Auth/Http/Controllers/Api/Web/Authentication/RegisterController.php`
-- `modules/Auth/Http/Controllers/Api/Mobile/Authentication/PasswordResetController.php`
+- `modules/Auth/Http/Controllers/Api/Admin/AuthenticationController.php`
+- `modules/Auth/Http/Controllers/Api/Web/AuthenticationController.php`
+- `modules/Auth/Http/Controllers/Api/Mobile/AuthenticationController.php`
+- `modules/Auth/Http/Controllers/Api/Admin/UserController.php`
+- `modules/Auth/Http/Controllers/Api/Web/UserController.php`
+- `modules/Auth/Http/Controllers/Api/Mobile/UserController.php`
 
-### User Management Controllers
-
-```bash
-# Admin user management
-php artisan make:controller Auth User Profile Admin
-php artisan make:controller Auth User Settings Admin
-
-# Web user profile
-php artisan make:controller Auth User Profile Web
-
-# Mobile user preferences
-php artisan make:controller Auth User Preferences Mobile
-```
-
-**Generated paths:**
-- `modules/Auth/Http/Controllers/Api/Admin/User/ProfileController.php`
-- `modules/Auth/Http/Controllers/Api/Admin/User/SettingsController.php`
-- `modules/Auth/Http/Controllers/Api/Web/User/ProfileController.php`
-- `modules/Auth/Http/Controllers/Api/Mobile/User/PreferencesController.php`
-
-### Product Management Controllers
+### Product Module Controllers
 
 ```bash
 # Admin product management
-php artisan make:controller Product Catalog Product Admin
-php artisan make:controller Product Catalog Category Admin
+php artisan make:controller Product Product Admin
+php artisan make:controller Product Category Admin
 
 # Web product browsing
-php artisan make:controller Product Catalog Product Web
-php artisan make:controller Product Search Product Web
+php artisan make:controller Product Product Web
+php artisan make:controller Product Category Web
 
 # Mobile product views
-php artisan make:controller Product Catalog Product Mobile
+php artisan make:controller Product Product Mobile
 ```
+
+**Generated paths:**
+- `modules/Product/Http/Controllers/Api/Admin/ProductController.php`
+- `modules/Product/Http/Controllers/Api/Admin/CategoryController.php`
+- `modules/Product/Http/Controllers/Api/Web/ProductController.php`
+- `modules/Product/Http/Controllers/Api/Web/CategoryController.php`
+- `modules/Product/Http/Controllers/Api/Mobile/ProductController.php`
 
 ## Generated Controller Structure
 
@@ -101,7 +92,7 @@ Each generated controller includes:
 ```php
 <?php
 
-namespace Modules\{Module}\Http\Controllers\Api\{Client}\{Feature};
+namespace Modules\{Module}\Http\Controllers\Api\{Client};
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
@@ -168,16 +159,17 @@ The command automatically creates the directory structure if it doesn't exist:
 ### Namespace Convention
 Controllers follow the namespace pattern:
 ```
-Modules\{Module}\Http\Controllers\Api\{Client}\{Feature}\{Controller}Controller
+Modules\{Module}\Http\Controllers\Api\{Client}\{Controller}Controller
 ```
 
 ### Route Organization
-Generated controllers can be organized in route files by client and feature:
+Generated controllers can be organized in route files by client:
 
 ```php
-// routes/api/{client}/{feature}.php
-Route::prefix('api/v1/{client}/{feature}')->group(function () {
-    Route::apiResource('resource', ControllerName::class);
+// routes/api/{client}.php
+Route::prefix('api/v1/{client}')->group(function () {
+    Route::apiResource('users', UserController::class);
+    Route::apiResource('products', ProductController::class);
 });
 ```
 
@@ -185,37 +177,30 @@ Route::prefix('api/v1/{client}/{feature}')->group(function () {
 
 ### Naming Conventions
 - **Module**: PascalCase (`Auth`, `ProductManagement`)
-- **Feature**: PascalCase (`Authentication`, `UserProfile`) 
-- **Controller**: PascalCase without "Controller" suffix (`Login`, `Register`)
+- **Controller**: PascalCase without "Controller" suffix (`User`, `Product`, `Authentication`)
 - **Client**: PascalCase (`Web`, `Admin`, `Mobile`)
 
 ### Organization Strategy
-- Group related controllers by feature
+- One controller per feature per client
 - Separate client-specific logic into different controllers
-- Use descriptive feature names that represent business capabilities
+- Use descriptive controller names that represent business capabilities
+- Keep controllers focused on a single responsibility
 
 ### Example Organization
 ```
 Auth/Http/Controllers/Api/
 ├── Admin/
-│   ├── Authentication/
-│   │   ├── LoginController.php
-│   │   └── LogoutController.php
-│   └── User/
-│       ├── ProfileController.php
-│       └── PermissionController.php
+│   ├── AuthenticationController.php
+│   ├── UserController.php
+│   └── PermissionController.php
 ├── Web/
-│   ├── Authentication/
-│   │   ├── LoginController.php
-│   │   ├── RegisterController.php
-│   │   └── PasswordResetController.php
-│   └── User/
-│       └── ProfileController.php
+│   ├── AuthenticationController.php
+│   ├── UserController.php
+│   └── ProfileController.php
 └── Mobile/
-    ├── Authentication/
-    │   └── LoginController.php
-    └── User/
-        └── PreferencesController.php
+    ├── AuthenticationController.php
+    ├── UserController.php
+    └── PreferencesController.php
 ```
 
 ## Error Messages
@@ -233,4 +218,4 @@ Upon successful creation, the command outputs:
 Controller {ControllerName} created successfully in {ModuleName} module!
 ```
 
-This organized approach ensures that controllers are properly structured, easy to locate, and maintainable as the application grows across different client types and features.
+This simplified approach ensures that controllers are properly structured, easy to locate, and maintainable as the application grows across different client types, with each feature having a single focused controller per client.

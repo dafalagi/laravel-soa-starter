@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Auth\Http\Controllers\Api\Admin\User\UserController;
+use Modules\Auth\Http\Controllers\Api\Admin\UserController;
 
 Route::prefix('user')->group(function () {
     Route::get('{user_uuid}', [UserController::class, 'show'])->name('admin.auth.user.show');
