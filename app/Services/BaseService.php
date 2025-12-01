@@ -17,8 +17,8 @@ class BaseService
 
     protected $results;
 
-    protected function process(mixed $dto): void {}
-    protected function rules(): array
+    protected function process(array $dto): void {}
+    protected function rules(array $dto): array
     {
         return [];
     }
@@ -31,7 +31,7 @@ class BaseService
             DB::beginTransaction();
 
             try {
-                $validator = Validator::make($dto, $this->rules());
+                $validator = Validator::make($dto, $this->rules($dto));
                 if ($validator->fails())
                     throw new ValidationException($validator);
                 
@@ -65,7 +65,7 @@ class BaseService
                 }
             }
         } else {
-            $validator = Validator::make($dto, $this->rules());
+            $validator = Validator::make($dto, $this->rules($dto));
             if ($validator->fails())
                 throw new ValidationException($validator);
 

@@ -1,7 +1,8 @@
 <?php
 
-namespace Modules\Auth\DTOs;
+namespace Modules\Auth\DTOs\User\Responses;
 
+use Illuminate\Support\Collection;
 use Modules\Auth\Models\User;
 
 class UserResponseDTO
@@ -31,6 +32,11 @@ class UserResponseDTO
             created_at: $user->created_at->toISOString(),
             updated_at: $user->updated_at->toISOString()
         );
+    }
+
+    public static function fromCollection(Collection $users): array
+    {
+        return array_map(fn(User $user) => self::fromModel($user), $users->all());
     }
 
     public function toArray(): array

@@ -2,6 +2,8 @@
 
 namespace Modules\Auth\DTOs;
 
+use Modules\Auth\DTOs\User\Responses\UserResponseDTO;
+
 class AuthResponseDTO
 {
     public function __construct(
