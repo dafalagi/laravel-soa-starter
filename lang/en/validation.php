@@ -178,8 +178,11 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'uuid' => [
+            'not_exists' => 'UUID not found.',
+        ],
+        'id' => [
+            'not_exists' => 'ID not found.',
         ],
     ],
 
