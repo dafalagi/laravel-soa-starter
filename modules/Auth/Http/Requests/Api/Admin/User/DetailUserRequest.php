@@ -4,7 +4,7 @@ namespace Modules\Auth\Http\Requests\Api\Admin\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class GetUserRequest extends FormRequest
+class DetailUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
