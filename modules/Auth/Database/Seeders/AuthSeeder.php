@@ -12,16 +12,14 @@ class AuthSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create a default admin user
         User::factory()->create([
             'name' => 'Master Admin',
             'email' => 'masteradmin@example.com',
             'email_verified_at' => now(),
         ]);
 
-        // Create additional test users in development
-        if (app()->environment(['local', 'testing'])) {
-            User::factory(10)->create();
-        }
+        // if (app()->environment(['local', 'testing'])) {
+        //     User::factory(10)->create();
+        // }
     }
 }

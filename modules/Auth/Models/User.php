@@ -48,9 +48,9 @@ class User extends Authenticatable implements OAuthenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-            'deleted_at' => 'datetime',
+            'created_at' => 'datetime:U',
+            'updated_at' => 'datetime:U',
+            'deleted_at' => 'datetime:U',
         ];
     }
 

@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Modules\Auth\Models\User;
 
+use function Symfony\Component\Clock\now;
+
 /**
  * @extends Factory<User>
  */
