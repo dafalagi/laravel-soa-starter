@@ -7,7 +7,7 @@
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="License">
 </p>
 
-A **Service-Oriented Architecture (SOA)** starter template built on Laravel 12, featuring a **modular monolith** design pattern with comprehensive service layer architecture, automated factory discovery, and enterprise-grade patterns.
+A **Service-Oriented Architecture (SOA)** starter template built on Laravel 12, featuring a **modular monolith** design pattern with comprehensive service layer architecture, automated discovery, and enterprise-grade patterns.
 
 ## 🎯 **Project Vision**
 
