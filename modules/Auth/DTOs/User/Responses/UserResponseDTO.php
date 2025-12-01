@@ -8,6 +8,7 @@ use Modules\Auth\Models\User;
 class UserResponseDTO
 {
     public function __construct(
+        public readonly int $id,
         public readonly string $uuid,
 
         public readonly string $name,
@@ -22,15 +23,16 @@ class UserResponseDTO
     public static function fromModel(User $user): self
     {
         return new self(
+            id: $user->id,
             uuid: $user->uuid,
 
             name: $user->name,
             email: $user->email,
-            email_verified_at: $user->email_verified_at?->toISOString(),
+            email_verified_at: $user->email_verified_at,
 
             version: $user->version,
-            created_at: $user->created_at->toISOString(),
-            updated_at: $user->updated_at->toISOString()
+            created_at: $user->created_at,
+            updated_at: $user->updated_at
         );
     }
 
@@ -42,6 +44,7 @@ class UserResponseDTO
     public function toArray(): array
     {
         return [
+            'id' => $this->id,
             'uuid' => $this->uuid,
 
             'name' => $this->name,
