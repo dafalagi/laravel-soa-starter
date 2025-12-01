@@ -235,7 +235,6 @@ vendor/bin/phpunit --coverage-html coverage/
 ## 📚 **Documentation**
 
 - [Modular Database Architecture](docs/MODULAR_DATABASE.md)
-- [Service Layer Patterns](docs/REFACTORED_SERVICES.md)
 - [API Documentation](docs/API.md) *(Coming Soon)*
 
 ## 🙏 **Acknowledgments**
