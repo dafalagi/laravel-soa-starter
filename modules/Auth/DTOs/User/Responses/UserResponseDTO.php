@@ -12,7 +12,6 @@ class UserResponseDTO
         public readonly int $id,
         public readonly string $uuid,
 
-        public readonly string $name,
         public readonly string $email,
         public readonly ?Carbon $email_verified_at,
 
@@ -27,7 +26,6 @@ class UserResponseDTO
             id: $user->id,
             uuid: $user->uuid,
 
-            name: $user->name,
             email: $user->email,
             email_verified_at: $user->email_verified_at,
 
@@ -48,7 +46,6 @@ class UserResponseDTO
             'id' => $this->id,
             'uuid' => $this->uuid,
 
-            'name' => $this->name,
             'email' => $this->email,
             'email_verified_at' => $this->email_verified_at,
 
