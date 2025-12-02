@@ -37,7 +37,7 @@ class BaseModel extends Model
         ];
     }
 
-    public function createdBy(?array $dto): array|null
+    public function createdBy(?array $dto): BaseModel|null
     {
         if (!$this->created_by) return null;
 
@@ -46,10 +46,12 @@ class BaseModel extends Model
             'user_uuid' => $this->created_by,
         ]));
 
-        return $get_user_service->execute($request)['data'];
+        $user = $get_user_service->execute($request)['data'];
+
+        return $this->setRelation('createdBy', $user);
     }
 
-    public function updatedBy(?array $dto): array|null
+    public function updatedBy(?array $dto): BaseModel|null
     {
         if (!$this->updated_by) return null;
 
@@ -58,10 +60,12 @@ class BaseModel extends Model
             'user_uuid' => $this->updated_by,
         ]));
 
-        return $get_user_service->execute($request)['data'];
+        $user = $get_user_service->execute($request)['data'];
+
+        return $this->setRelation('updatedBy', $user);
     }
 
-    public function deletedBy(?array $dto): array|null
+    public function deletedBy(?array $dto): BaseModel|null
     {
         if (!$this->deleted_by) return null;
 
@@ -70,6 +74,8 @@ class BaseModel extends Model
             'user_uuid' => $this->deleted_by,
         ]));
 
-        return $get_user_service->execute($request)['data'];
+        $user = $get_user_service->execute($request)['data'];
+
+        return $this->setRelation('deletedBy', $user);
     }
 }
