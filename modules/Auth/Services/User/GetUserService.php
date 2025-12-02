@@ -27,17 +27,17 @@ class GetUserService extends BaseService implements GetUserServiceInterface
 
         if (!empty($dto['user_uuid'])) {
             $model->where('uuid', $dto['user_uuid']);
-            $data = $model->first();
+            $data = UserResponseDTO::fromModel($model->first());
         } else {
             if ($dto['with_pagination'] === true) {
                 $this->results['pagination'] = $this->paginationDetail($dto['per_page'], $dto['page'], $model->count());
                 $model = $this->paginateData($model, $dto['per_page'], $dto['page']);
             }
 
-            $data = $model->get();
+            $data = UserResponseDTO::fromCollection($model->get());
         }
 
-        $this->results['data'] = UserResponseDTO::fromCollection($data);
+        $this->results['data'] = $data;
         $this->results['message'] = __('auth::user.get.success');
     }
 
