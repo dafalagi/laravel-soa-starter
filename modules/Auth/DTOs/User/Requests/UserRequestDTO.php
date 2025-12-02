@@ -5,13 +5,13 @@ namespace Modules\Auth\DTOs\User\Requests;
 class UserRequestDTO
 {
     public function __construct(
-        public readonly ?string $user_uuid = null,
-        public readonly ?int $per_page = null,
-        public readonly ?int $page = null,
-        public readonly ?string $sort_by = null,
-        public readonly ?string $sort_order = null,
-        public readonly bool $with_pagination = false,
-        public readonly ?array $with = null,
+        public readonly ?string $user_uuid,
+        public readonly ?int $per_page,
+        public readonly ?int $page,
+        public readonly ?string $sort_by,
+        public readonly ?string $sort_order,
+        public readonly bool $with_pagination,
+        public readonly ?array $with,
     ) {}
 
     public static function fromArray(array $data): self
