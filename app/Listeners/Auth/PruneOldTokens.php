@@ -23,14 +23,14 @@ class PruneOldTokens
     public function handle(AccessTokenCreated $event): void
     {
         $user = $event->userId;
-        $clientId = $event->clientId;
+        $client_id = $event->clientId;
 
         // Check if the user is master admin (ID 1)
         if($user == 1) return;
 
         // Revoke all previous tokens for the user and client
         $tokens = Token::where('user_id', $user)
-            ->where('client_id', $clientId)
+            ->where('client_id', $client_id)
             ->where('updated_at', '<', now()) // Adjust the time period as needed
             ->get();
 
