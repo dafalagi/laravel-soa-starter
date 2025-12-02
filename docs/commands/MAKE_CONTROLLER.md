@@ -96,7 +96,6 @@ namespace Modules\{Module}\Http\Controllers\Api\{Client};
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class {Controller}Controller extends ApiController
 {
@@ -104,27 +103,27 @@ class {Controller}Controller extends ApiController
     {
     }
 
-    public function index(Request $request): JsonResponse
+    public function index($request): JsonResponse
     {
         return $this->response([]);
     }
 
-    public function show(Request $request): JsonResponse
+    public function show($request): JsonResponse
     {
         return $this->response([]);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store($request): JsonResponse
     {
         return $this->response([]);
     }
 
-    public function update(Request $request): JsonResponse
+    public function update($request): JsonResponse
     {
         return $this->response([]);
     }
 
-    public function destroy(Request $request): JsonResponse
+    public function destroy($request): JsonResponse
     {
         return $this->response([]);
     }

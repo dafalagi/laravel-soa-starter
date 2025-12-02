@@ -85,27 +85,27 @@ class MakeControllerCommand extends Command
         $constructor = "\n    public function __construct()\n    {\n    }";
 
         $methods = "
-    public function index(Request \$request): JsonResponse
+    public function index(\$request): JsonResponse
     {
         return \$this->response([]);
     }
 
-    public function show(Request \$request): JsonResponse
+    public function show(\$request): JsonResponse
     {
         return \$this->response([]);
     }
 
-    public function store(Request \$request): JsonResponse
+    public function store(\$request): JsonResponse
     {
         return \$this->response([]);
     }
 
-    public function update(Request \$request): JsonResponse
+    public function update(\$request): JsonResponse
     {
         return \$this->response([]);
     }
 
-    public function destroy(Request \$request): JsonResponse
+    public function destroy(\$request): JsonResponse
     {
         return \$this->response([]);
     }";
@@ -116,7 +116,6 @@ namespace {$module_namespace}\\Http\\Controllers\\{$client_namespace};
 
 use App\\Http\\Controllers\\{$base_controller};
 use Illuminate\\Http\\JsonResponse;
-use Illuminate\\Http\\Request;
 
 class {$controller_name} extends {$base_controller}
 {{$constructor}
