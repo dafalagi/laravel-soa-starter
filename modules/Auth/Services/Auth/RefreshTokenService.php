@@ -22,6 +22,10 @@ class RefreshTokenService extends BaseService implements RefreshTokenServiceInte
 
         /** @var \Modules\Auth\Models\User $user */
         $user = $dto['user'];
+        
+        $user->tokens()->each(function($token) {
+            $token->revoke();
+        });
 
         $token = $user->createToken(app('client').'_token')->accessToken;
         $user = UserResponseDTO::fromModel($user);
