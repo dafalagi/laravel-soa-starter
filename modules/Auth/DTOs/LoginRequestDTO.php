@@ -7,7 +7,8 @@ class LoginRequestDTO
     public function __construct(
         public readonly string $email,
         public readonly string $password,
-        public readonly bool $remember = false
+        public readonly bool $remember = false,
+        public readonly ?string $client = null,
     ) {}
 
     public static function fromArray(array $data): self
@@ -15,7 +16,8 @@ class LoginRequestDTO
         return new self(
             email: $data['email'] ?? '',
             password: $data['password'] ?? '',
-            remember: $data['remember'] ?? false
+            remember: $data['remember'] ?? false,
+            client: $data['client'] ?? null,
         );
     }
 
@@ -25,6 +27,7 @@ class LoginRequestDTO
             'email' => $this->email,
             'password' => $this->password,
             'remember' => $this->remember,
+            'client' => $this->client,
         ];
     }
 }

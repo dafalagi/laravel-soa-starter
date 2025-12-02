@@ -30,7 +30,7 @@ class LoginService extends BaseService implements LoginServiceInterface
         if (Hash::check($dto['password'], $user->password) == false)
             throw new \Exception(__('auth::auth.login.invalid_credentials'), 401);
 
-        $token = $user->createToken("user_token")->accessToken;
+        $token = $user->createToken("{$dto['client']}_token")->accessToken;
         $user = UserResponseDTO::fromModel($user);
 
         $this->results['data'] = AuthResponseDTO::fromUserAndToken($user, $token);
@@ -48,6 +48,7 @@ class LoginService extends BaseService implements LoginServiceInterface
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
             'remember' => ['required', 'boolean'],
+            'client' => ['required', 'string', 'in:admin,web,mobile'],
         ];
     }
 }

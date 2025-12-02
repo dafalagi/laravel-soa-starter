@@ -5,8 +5,8 @@ namespace Modules\Auth\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Modules\Auth\DTOs\LoginRequestDTO;
+use Modules\Auth\Http\Requests\Api\Admin\Auth\LoginRequest;
 use Modules\Auth\Services\Auth\Contracts\LoginServiceInterface;
 use Modules\Auth\Services\Auth\Contracts\LogoutServiceInterface;
 use Modules\Auth\Services\Auth\Contracts\RefreshTokenServiceInterface;
@@ -24,7 +24,7 @@ class AuthController extends Controller
     /**
      * Login user.
      */
-    public function login(Request $request): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
         $dto = LoginRequestDTO::fromArray($request->all());
         $response = $this->login_service->execute($dto);
