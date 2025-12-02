@@ -18,7 +18,7 @@ class LogoutService extends BaseService implements LogoutServiceInterface
         return parent::execute($dto, $sub_service);
     }
 
-    public function process(array $dto): void
+    protected function process(array $dto): void
     {
         $user = Auth::user();
         $this->revokeAccessAndRefreshToken($user);
