@@ -9,5 +9,5 @@ interface RefreshTokenServiceInterface
     /**
      * Refresh the authentication token.
      */
-    public function execute(): AuthResponseDTO;
+    public function execute(mixed $dto, bool $sub_service = false): array;
 }

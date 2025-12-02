@@ -16,7 +16,7 @@ return [
         'success' => 'User logged in successfully.',
         'failed' => 'The provided credentials are incorrect.',
         'invalid_credentials' => 'Invalid credentials provided.',
-        'account_inactive' => 'Your account is currently inactive.',
+        'inactive_account' => 'Your account is currently inactive.',
         'too_many_attempts' => 'Too many login attempts. Please try again later.',
     ],
 
@@ -27,8 +27,6 @@ return [
 
     'token' => [
         'refresh_success' => 'Token refreshed successfully.',
-        'refresh_failed' => 'Token refresh failed.',
-        'invalid' => 'Invalid or expired token.',
-        'missing' => 'Authentication token is missing.',
+        'inactive_account' => 'Cannot refresh token for inactive account.',
     ],
 ];

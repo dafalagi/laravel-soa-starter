@@ -2,50 +2,43 @@
 
 namespace Modules\Auth\Services\Auth;
 
+use App\Services\BaseService;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
 use Modules\Auth\DTOs\AuthResponseDTO;
 use Modules\Auth\DTOs\User\Responses\UserResponseDTO;
 use Modules\Auth\Services\Auth\Contracts\RefreshTokenServiceInterface;
 
-class RefreshTokenService implements RefreshTokenServiceInterface
+class RefreshTokenService extends BaseService implements RefreshTokenServiceInterface
 {
-    /**
-     * Refresh the authentication token.
-     */
-    public function execute(): AuthResponseDTO
+    public function execute(mixed $dto, bool $sub_service = false): array
     {
-        $this->prepare();
-
-        $user = Auth::user();
-        $user_dto = UserResponseDTO::fromModel($user);
-
-        return AuthResponseDTO::fromUserAndToken($user_dto);
+        return parent::execute($dto, $sub_service);
     }
 
-    /**
-     * Prepare and validate the token refresh.
-     */
-    private function prepare(): void
+    protected function process(array $dto): void
     {
-        // Validate that user is authenticated
-        if (!Auth::check()) {
-            throw new AuthenticationException('Unauthenticated.');
-        }
+        $dto = $this->prepare($dto);
 
-        /**
-         * @var \Modules\Auth\Models\User|null $user
-         */
+        /** @var \Modules\Auth\Models\User $user */
+        $user = $dto['user'];
+
+        $token = $user->createToken(app('client').'_token')->accessToken;
+        $user = UserResponseDTO::fromModel($user);
+
+        $this->results['data'] = AuthResponseDTO::fromUserAndToken($user, $token);
+        $this->results['message'] = __('auth::auth.token.refresh_success');
+    }
+
+    private function prepare(array $dto): array
+    {
+        /** @var \Modules\Auth\Models\User|null $user */
         $user = Auth::user();
-        
-        // Additional business logic validation
-        if (!$user) {
-            throw new AuthenticationException('User not found.');
-        }
+        $dto['user'] = $user;
 
-        // Check if user account is still active (example validation)
-        if (!$user->isActive()) {
-            throw new AuthenticationException('User account is inactive.');
-        }
+        if (!$user->isActive())
+            throw new AuthenticationException(__('auth::auth.token.inactive_account'));
+
+        return $dto;
     }
 }
