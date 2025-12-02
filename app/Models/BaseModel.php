@@ -37,8 +37,10 @@ class BaseModel extends Model
         ];
     }
 
-    public function createdBy(?array $dto): array
+    public function createdBy(?array $dto): array|null
     {
+        if (!$this->created_by) return null;
+
         $get_user_service = app(GetUserServiceInterface::class);
         $request = UserRequestDTO::fromArray(array_merge($dto ?? [], [
             'user_uuid' => $this->created_by,
@@ -47,8 +49,10 @@ class BaseModel extends Model
         return $get_user_service->execute($request)['data'];
     }
 
-    public function updatedBy(?array $dto): array
+    public function updatedBy(?array $dto): array|null
     {
+        if (!$this->updated_by) return null;
+
         $get_user_service = app(GetUserServiceInterface::class);
         $request = UserRequestDTO::fromArray(array_merge($dto ?? [], [
             'user_uuid' => $this->updated_by,
@@ -57,8 +61,10 @@ class BaseModel extends Model
         return $get_user_service->execute($request)['data'];
     }
 
-    public function deletedBy(?array $dto): array
+    public function deletedBy(?array $dto): array|null
     {
+        if (!$this->deleted_by) return null;
+
         $get_user_service = app(GetUserServiceInterface::class);
         $request = UserRequestDTO::fromArray(array_merge($dto ?? [], [
             'user_uuid' => $this->deleted_by,
