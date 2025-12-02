@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Modules\Auth\Database\Seeders\AuthSeeder;
+use Modules\Auth\Database\Seeders\UserSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         // Call module seeders
         $this->call([
-            AuthSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }

@@ -6,11 +6,9 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Auth\Services\Auth\Contracts\LoginServiceInterface;
 use Modules\Auth\Services\Auth\Contracts\LogoutServiceInterface;
 use Modules\Auth\Services\Auth\Contracts\RefreshTokenServiceInterface;
-use Modules\Auth\Services\Auth\Contracts\RegisterUserServiceInterface;
 use Modules\Auth\Services\Auth\LoginService;
 use Modules\Auth\Services\Auth\LogoutService;
 use Modules\Auth\Services\Auth\RefreshTokenService;
-use Modules\Auth\Services\Auth\RegisterUserService;
 use Modules\Auth\Services\User\Contracts\GetUserServiceInterface;
 use Modules\Auth\Services\User\GetUserService;
 
