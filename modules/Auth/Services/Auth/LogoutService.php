@@ -2,31 +2,38 @@
 
 namespace Modules\Auth\Services\Auth;
 
+use App\Services\BaseService;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Passport\Bridge\RefreshTokenRepository;
 use Modules\Auth\Services\Auth\Contracts\LogoutServiceInterface;
 
-class LogoutService implements LogoutServiceInterface
+class LogoutService extends BaseService implements LogoutServiceInterface
 {
-    /**
-     * Logout the authenticated user.
-     */
-    public function execute(): void
+    public function __construct(
+        protected RefreshTokenRepository $refreshTokenRepository
+    ) {}
+
+    public function execute(mixed $dto, bool $sub_service = false): array
     {
-        $this->prepare();
-        
-        Auth::logout();
+        return parent::execute($dto, $sub_service);
     }
 
-    /**
-     * Prepare the logout operation.
-     */
-    private function prepare(): void
+    public function process(array $dto): void
     {
-        // Additional business logic validation can be added here
-        // For example, clearing specific user sessions, logging audit trails, etc.
-        if (!Auth::check()) {
-            // Already logged out, nothing to do
-            return;
-        }
+        $user = Auth::user();
+        $this->revokeAccessAndRefreshToken($user);
+
+        $this->results['data'] = null;
+        $this->results['message'] = __('auth::auth.logout.success');
+    }
+
+    private function revokeAccessAndRefreshToken($user)
+    {
+        $user->tokens()->each(function($token) {
+            $token->revoke();
+            $token->delete();
+
+            $this->refreshTokenRepository->revokeRefreshToken($token->id);
+        });
     }
 }

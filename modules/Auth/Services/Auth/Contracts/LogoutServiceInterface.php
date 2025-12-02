@@ -7,5 +7,5 @@ interface LogoutServiceInterface
     /**
      * Logout the authenticated user.
      */
-    public function execute(): void;
+    public function execute(mixed $dto, bool $sub_service = false): array;
 }
