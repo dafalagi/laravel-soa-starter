@@ -26,9 +26,8 @@ class ExistsUuid implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!$this->table instanceof \Illuminate\Database\Eloquent\Model and !$this->table instanceof BaseModel) {
-            $this->table = DB::table($this->table);
-        }
+        if (!$this->table instanceof \Illuminate\Database\Eloquent\Model and !$this->table instanceof BaseModel)
+            throw new \Exception('Table must be an instance of Eloquent Model or BaseModel');
 
         if (strpos($value, ',') !== false) {
             $splitted_value = explode(',', $value);
