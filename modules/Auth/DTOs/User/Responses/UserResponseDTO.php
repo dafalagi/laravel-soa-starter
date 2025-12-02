@@ -17,7 +17,9 @@ class UserResponseDTO
 
         public readonly int $version,
         public readonly Carbon $created_at,
-        public readonly Carbon $updated_at
+        public readonly Carbon $updated_at,
+        public readonly ?User $createdBy,
+        public readonly ?User $updatedBy,
     ) {}
 
     public static function fromModel(User $user): self
@@ -31,7 +33,9 @@ class UserResponseDTO
 
             version: $user->version,
             created_at: $user->created_at,
-            updated_at: $user->updated_at
+            updated_at: $user->updated_at,
+            createdBy: $user->createdBy,
+            updatedBy: $user->updatedBy,
         );
     }
 
@@ -52,6 +56,8 @@ class UserResponseDTO
             'version' => $this->version,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'createdBy' => $this->createdBy,
+            'updatedBy' => $this->updatedBy,
         ];
     }
 }

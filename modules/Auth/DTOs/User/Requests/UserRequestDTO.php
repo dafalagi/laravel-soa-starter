@@ -5,6 +5,7 @@ namespace Modules\Auth\DTOs\User\Requests;
 class UserRequestDTO
 {
     public function __construct(
+        public readonly ?int $user_id,
         public readonly ?string $user_uuid,
         public readonly ?int $per_page,
         public readonly ?int $page,
@@ -17,6 +18,7 @@ class UserRequestDTO
     public static function fromArray(array $data): self
     {
         return new self(
+            user_id: $data['user_id'] ?? null,
             user_uuid: $data['user_uuid'] ?? null,
             per_page: $data['per_page'] ?? null,
             page: $data['page'] ?? null,
@@ -30,6 +32,7 @@ class UserRequestDTO
     public function toArray(): array
     {
         return [
+            'user_id' => $this->user_id,
             'user_uuid' => $this->user_uuid,
             'per_page' => $this->per_page,
             'page' => $this->page,
