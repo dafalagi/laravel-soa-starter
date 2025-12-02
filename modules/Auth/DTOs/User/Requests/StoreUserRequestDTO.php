@@ -5,9 +5,9 @@ namespace Modules\Auth\DTOs\User\Requests;
 class StoreUserRequestDTO
 {
     public function __construct(
-        public readonly string $email,
-        public readonly string $password,
-        public readonly string $password_confirmation,
+        public readonly ?string $email,
+        public readonly ?string $password,
+        public readonly ?string $password_confirmation,
     ) {}
 
     public static function fromArray(array $data): self
