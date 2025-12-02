@@ -6,7 +6,8 @@ use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modules\Auth\DTOs\User\Requests\UserRequestDTO;
-use Modules\Auth\Http\Requests\Api\Admin\User\DetailUserRequest;
+use Modules\Auth\Http\Requests\Api\Admin\User\UserDetailRequest;
+use Modules\Auth\Http\Requests\Api\Admin\User\UserListRequest;
 use Modules\Auth\Services\User\Contracts\GetUserServiceInterface;
 
 class UserController extends ApiController
@@ -15,7 +16,7 @@ class UserController extends ApiController
         private readonly GetUserServiceInterface $get_user_service
     ) {}
 
-    public function index(Request $request): JsonResponse
+    public function index(UserListRequest $request): JsonResponse
     {
         $dto = UserRequestDTO::fromArray($request->all());
         $response = $this->get_user_service->execute($dto);
@@ -23,7 +24,7 @@ class UserController extends ApiController
         return $this->response($response);
     }
 
-    public function show(DetailUserRequest $request): JsonResponse
+    public function show(UserDetailRequest $request): JsonResponse
     {
         $dto = UserRequestDTO::fromArray($request->all());
         $response = $this->get_user_service->execute($dto);

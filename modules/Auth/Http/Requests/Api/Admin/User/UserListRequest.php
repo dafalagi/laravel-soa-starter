@@ -4,7 +4,7 @@ namespace Modules\Auth\Http\Requests\Api\Admin\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DetailUserRequest extends FormRequest
+class UserListRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,8 +19,8 @@ class DetailUserRequest extends FormRequest
      */
     public function prepareForValidation(): void
     {
-        $this->merge([
-            'user_uuid' => $this->route('user_uuid'),
-        ]);
+        // $this->merge([
+        //     'key' => $this->route('key'),
+        // ]);
     }
 }
