@@ -2,6 +2,7 @@
 
 namespace Modules\Auth\DTOs\User\Responses;
 
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Modules\Auth\Models\User;
 
@@ -13,11 +14,11 @@ class UserResponseDTO
 
         public readonly string $name,
         public readonly string $email,
-        public readonly ?string $email_verified_at,
+        public readonly ?Carbon $email_verified_at,
 
         public readonly int $version,
-        public readonly string $created_at,
-        public readonly string $updated_at
+        public readonly Carbon $created_at,
+        public readonly Carbon $updated_at
     ) {}
 
     public static function fromModel(User $user): self
