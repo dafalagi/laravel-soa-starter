@@ -3,14 +3,6 @@
 namespace Modules\Auth\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Modules\Auth\Services\Auth\Contracts\LoginServiceInterface;
-use Modules\Auth\Services\Auth\Contracts\LogoutServiceInterface;
-use Modules\Auth\Services\Auth\Contracts\RefreshTokenServiceInterface;
-use Modules\Auth\Services\Auth\LoginService;
-use Modules\Auth\Services\Auth\LogoutService;
-use Modules\Auth\Services\Auth\RefreshTokenService;
-use Modules\Auth\Services\User\Contracts\GetUserServiceInterface;
-use Modules\Auth\Services\User\GetUserService;
 
 class AuthModuleServiceProvider extends ServiceProvider
 {
@@ -20,12 +12,13 @@ class AuthModuleServiceProvider extends ServiceProvider
     public function register(): void
     {
         /** Auth */
-        $this->app->bind(LoginServiceInterface::class, LoginService::class);
-        $this->app->bind(LogoutServiceInterface::class, LogoutService::class);
-        $this->app->bind(RefreshTokenServiceInterface::class, RefreshTokenService::class);
+        $this->app->bind(\Modules\Auth\Services\Auth\Contracts\LoginServiceInterface::class, \Modules\Auth\Services\Auth\LoginService::class);
+        $this->app->bind(\Modules\Auth\Services\Auth\Contracts\LogoutServiceInterface::class, \Modules\Auth\Services\Auth\LogoutService::class);
+        $this->app->bind(\Modules\Auth\Services\Auth\Contracts\RefreshTokenServiceInterface::class, \Modules\Auth\Services\Auth\RefreshTokenService::class);
         
         /** User */
-        $this->app->bind(GetUserServiceInterface::class, GetUserService::class);
+        $this->app->bind(\Modules\Auth\Services\User\Contracts\GetUserServiceInterface::class, \Modules\Auth\Services\User\GetUserService::class);
+        $this->app->bind(\Modules\Auth\Services\User\Contracts\StoreUserServiceInterface::class, \Modules\Auth\Services\User\StoreUserService::class);
     }
 
     /**

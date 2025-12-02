@@ -15,4 +15,8 @@ return [
     'get' => [
         'success' => 'User successfully fetched.',
     ],
+
+    'store' => [
+        'success' => 'User successfully stored.',
+    ],
 ];
