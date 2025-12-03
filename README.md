@@ -55,75 +55,117 @@ This starter template provides a solid foundation for building scalable, maintai
 
 ```mermaid
 graph TB
-    subgraph "Client Applications"
-        Admin[👨‍💼 Admin Dashboard]
-        Web[🌐 Web Application]
-        Mobile[📱 Mobile App]
+    %% Client Applications Layer
+    subgraph Clients ["🌐 Client Applications"]
+        Admin["👨‍💼 Admin Dashboard"]
+        Web["🌐 Web Frontend"]
+        Mobile["📱 Mobile App"]
     end
 
-    subgraph "API Layer"
-        AdminAPI[Admin API Routes]
-        WebAPI[Web API Routes]
-        MobileAPI[Mobile API Routes]
+    %% API Gateway Layer
+    subgraph Gateway ["🛣️ API Gateway"]
+        AdminRoutes["/api/admin/*"]
+        WebRoutes["/api/web/*"]
+        MobileRoutes["/api/mobile/*"]
     end
 
-    subgraph "Module: Auth"
-        subgraph "Controllers"
-            AdminCtrl[Admin Controllers]
-            WebCtrl[Web Controllers]
-            MobileCtrl[Mobile Controllers]
+    %% Application Layer
+    subgraph AppLayer ["🎮 Application Layer"]
+        AdminControllers["Admin Controllers"]
+        WebControllers["Web Controllers"] 
+        MobileControllers["Mobile Controllers"]
+        
+        AdminRequests["Admin Requests"]
+        WebRequests["Web Requests"]
+        MobileRequests["Mobile Requests"]
+        
+        AdminResources["Admin Resources"]
+        WebResources["Web Resources"]
+        MobileResources["Mobile Resources"]
+    end
+
+    %% Service Layer (SOA Core)
+    subgraph ServiceLayer ["🔧 Service Layer (SOA)"]
+        subgraph AuthModule ["Auth Module"]
+            AuthServices["🔐 Auth Services<br/>• LoginService<br/>• TokenService<br/>• RegisterService"]
+            AuthModels["📊 Models & DTOs"]
         end
         
-        subgraph "HTTP Layer"
-            AdminReq[Admin Requests]
-            WebReq[Web Requests]
-            MobileReq[Mobile Requests]
-            AdminRes[Admin Resources]
-            WebRes[Web Resources]  
-            MobileRes[Mobile Resources]
+        subgraph ProductModule ["Product Module"]
+            ProductServices["📦 Product Services<br/>• CreateProductService<br/>• UpdateProductService<br/>• DeleteProductService"]
+            ProductModels["📊 Models & DTOs"]
         end
         
-        Services[Services Layer]
-        Models[Models & DTOs]
-        Database[(Database)]
-    end
-    
-    subgraph "Module: Product"
-        PServices[Services Layer]
-        PModels[Models & DTOs]  
-        PDatabase[(Database)]
-    end
-    
-    subgraph "Module: Order"
-        OServices[Services Layer]
-        OModels[Models & DTOs]
-        ODatabase[(Database)]
+        subgraph OrderModule ["Order Module"]
+            OrderServices["🛒 Order Services<br/>• CreateOrderService<br/>• PaymentService<br/>• StatusService"]
+            OrderModels["📊 Models & DTOs"]
+        end
     end
 
-    Admin --> AdminAPI
-    Web --> WebAPI  
-    Mobile --> MobileAPI
+    %% Database Layer
+    subgraph DatabaseLayer ["💾 Database Layer"]
+        AuthDB[("🔐 Auth<br/>Database")]
+        ProductDB[("📦 Product<br/>Database")]
+        OrderDB[("🛒 Order<br/>Database")]
+    end
+
+    %% Client to Gateway connections
+    Admin --> AdminRoutes
+    Web --> WebRoutes
+    Mobile --> MobileRoutes
+
+    %% Gateway to Controllers
+    AdminRoutes --> AdminControllers
+    WebRoutes --> WebControllers
+    MobileRoutes --> MobileControllers
+
+    %% Controllers to HTTP Layer
+    AdminControllers --> AdminRequests
+    AdminControllers --> AdminResources
+    WebControllers --> WebRequests
+    WebControllers --> WebResources
+    MobileControllers --> MobileRequests
+    MobileControllers --> MobileResources
+
+    %% All Controllers to Services
+    AdminControllers --> AuthServices
+    AdminControllers --> ProductServices
+    AdminControllers --> OrderServices
     
-    AdminAPI --> AdminCtrl
-    WebAPI --> WebCtrl
-    MobileAPI --> MobileCtrl
+    WebControllers --> AuthServices
+    WebControllers --> ProductServices
+    WebControllers --> OrderServices
     
-    AdminCtrl --> AdminReq
-    AdminCtrl --> AdminRes
-    WebCtrl --> WebReq
-    WebCtrl --> WebRes
-    MobileCtrl --> MobileReq
-    MobileCtrl --> MobileRes
-    
-    AdminCtrl --> Services
-    WebCtrl --> Services
-    MobileCtrl --> Services
-    
-    Services --> Models
-    Models --> Database
-    
-    Services -.-> PServices
-    Services -.-> OServices
+    MobileControllers --> AuthServices
+    MobileControllers --> ProductServices
+    MobileControllers --> OrderServices
+
+    %% Services to Models
+    AuthServices --> AuthModels
+    ProductServices --> ProductModels
+    OrderServices --> OrderModels
+
+    %% Models to Databases
+    AuthModels --> AuthDB
+    ProductModels --> ProductDB
+    OrderModels --> OrderDB
+
+    %% Inter-module communication (optional)
+    AuthServices -.->|"Cross-module<br/>communication"| ProductServices
+    ProductServices -.-> OrderServices
+
+    %% Styling
+    classDef clientStyle fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef gatewayStyle fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef appStyle fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef serviceStyle fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef dbStyle fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+
+    class Admin,Web,Mobile clientStyle
+    class AdminRoutes,WebRoutes,MobileRoutes gatewayStyle
+    class AdminControllers,WebControllers,MobileControllers,AdminRequests,WebRequests,MobileRequests,AdminResources,WebResources,MobileResources appStyle
+    class AuthServices,ProductServices,OrderServices,AuthModels,ProductModels,OrderModels serviceStyle
+    class AuthDB,ProductDB,OrderDB dbStyle
 ```
 
 ## 📁 **Project Structure**
