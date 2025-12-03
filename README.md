@@ -53,12 +53,93 @@ This starter template provides a solid foundation for building scalable, maintai
 - **Naming Conventions Consistency** - Snake_case variables, proper suffixes, and organized namespacing
 - **Clean Architecture** - Clear separation between controllers, services, models, and client types
 
+## 🏗️ **Architecture Overview**
+
+```mermaid
+graph TB
+    subgraph "Client Applications"
+        Admin[👨‍💼 Admin Dashboard]
+        Web[🌐 Web Application]
+        Mobile[📱 Mobile App]
+    end
+
+    subgraph "API Layer"
+        AdminAPI[Admin API Routes]
+        WebAPI[Web API Routes]
+        MobileAPI[Mobile API Routes]
+    end
+
+    subgraph "Module: Auth"
+        subgraph "Controllers"
+            AdminCtrl[Admin Controllers]
+            WebCtrl[Web Controllers]
+            MobileCtrl[Mobile Controllers]
+        end
+        
+        subgraph "HTTP Layer"
+            AdminReq[Admin Requests]
+            WebReq[Web Requests]
+            MobileReq[Mobile Requests]
+            AdminRes[Admin Resources]
+            WebRes[Web Resources]  
+            MobileRes[Mobile Resources]
+        end
+        
+        Services[Services Layer]
+        Models[Models & DTOs]
+        Database[(Database)]
+    end
+    
+    subgraph "Module: Product"
+        PServices[Services Layer]
+        PModels[Models & DTOs]  
+        PDatabase[(Database)]
+    end
+    
+    subgraph "Module: Order"
+        OServices[Services Layer]
+        OModels[Models & DTOs]
+        ODatabase[(Database)]
+    end
+
+    Admin --> AdminAPI
+    Web --> WebAPI  
+    Mobile --> MobileAPI
+    
+    AdminAPI --> AdminCtrl
+    WebAPI --> WebCtrl
+    MobileAPI --> MobileCtrl
+    
+    AdminCtrl --> AdminReq
+    AdminCtrl --> AdminRes
+    WebCtrl --> WebReq
+    WebCtrl --> WebRes
+    MobileCtrl --> MobileReq
+    MobileCtrl --> MobileRes
+    
+    AdminCtrl --> Services
+    WebCtrl --> Services
+    MobileCtrl --> Services
+    
+    Services --> Models
+    Models --> Database
+    
+    Services -.-> PServices
+    Services -.-> OServices
+```
+
 ## 📁 **Project Structure**
 
 ```
 ├── app/
 │   ├── Console/Commands/
-│   │   └── MakeModuleCommand.php          # Module generator command
+│   │   ├── Database/                      # Database related commands
+│   │   │   └── MigrateFresh.php
+│   │   └── Make/                          # Code generation commands
+│   │       ├── MakeControllerCommand.php
+│   │       ├── MakeRequestCommand.php
+│   │       ├── MakeResourceCommand.php
+│   │       └── MakeDtoCommand.php
 │   ├── Services/
 │   │   └── BaseService.php                # Base service with common functionality
 │   ├── Http/Traits/
