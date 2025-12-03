@@ -155,11 +155,11 @@ graph TB
     ProductServices -.-> OrderServices
 
     %% Styling
-    classDef clientStyle fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    classDef gatewayStyle fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    classDef appStyle fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
-    classDef serviceStyle fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    classDef dbStyle fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    classDef clientStyle fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000000
+    classDef gatewayStyle fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000000
+    classDef appStyle fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px,color:#000000
+    classDef serviceStyle fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000000
+    classDef dbStyle fill:#fce4ec,stroke:#880e4f,stroke-width:2px,color:#000000
 
     class Admin,Web,Mobile clientStyle
     class AdminRoutes,WebRoutes,MobileRoutes gatewayStyle
