@@ -18,7 +18,8 @@ This starter template provides a solid foundation for building scalable, maintai
 ### 🏛️ **Modular Architecture**
 - **Modular Monolith Design** - Self-contained modules with clear boundaries
 - **Service-Oriented Architecture** - Business logic encapsulated in dedicated services  
-- **Module Generator** - `php artisan make:module` command for rapid development
+- **Client-Type Separation** - Routes, controllers, requests, and resources organized by client (Admin/Web/Mobile)
+- **Code Generation Commands** - Automated scaffolding with `make:controller`, `make:request`, `make:resource`, `make:dto`
 - **Automatic Module Discovery** - Routes, migrations, and services auto-registered
 
 ### 🔧 **Advanced Service Layer**
@@ -26,11 +27,20 @@ This starter template provides a solid foundation for building scalable, maintai
 - **Single Responsibility Services** - Each service handles one specific action
 - **Comprehensive Validation** - Request validation moved to service layer
 - **Standardized Response Format** - Uniform API responses across all endpoints
+- **Client-Optimized Responses** - Tailored data structures for Admin, Web, and Mobile clients
 
 ### 🧪 **Testing & Quality**
 - **Modular Test Structure** - Tests organized per module
 - **Comprehensive Test Coverage** - Unit and feature tests included
 - **Factory Discovery System** - Automatic model factory resolution
+
+### 📱 **Client-Type Architecture**
+- **Multi-Client Support** - Separate API endpoints for Admin, Web, and Mobile clients
+- **Optimized Performance** - Client-specific controllers reduce unnecessary processing
+- **Targeted Responses** - Resources tailored for each client's data requirements
+- **Separation of Concerns** - Admin features isolated from public web/mobile interfaces
+- **Maintainability** - Easy to modify client-specific logic without affecting others
+- **Security** - Clear boundaries between administrative and public functionality
 
 ### 🗄️ **Database Architecture**  
 - **Module-Specific Databases** - Each module manages its own migrations, factories, seeders
@@ -38,10 +48,10 @@ This starter template provides a solid foundation for building scalable, maintai
 - **Migration Organization** - Clear separation of database concerns per module
 
 ### 🎨 **Developer Experience**
-- **Intelligent Code Generation** - Consistent patterns across generated code
+- **Comprehensive Code Generation** - Controllers, requests, resources, and DTOs with consistent patterns
 - **Rich Documentation** - Comprehensive guides and architectural documentation  
-- **Naming Conventions Consistency** - All generated code follows snake_case conventions for variables and camelCase conventions for methods (except tests)
-- **Clean Architecture** - Clear separation between controllers, services, and models
+- **Naming Conventions Consistency** - Snake_case variables, proper suffixes, and organized namespacing
+- **Clean Architecture** - Clear separation between controllers, services, models, and client types
 
 ## 📁 **Project Structure**
 
@@ -58,7 +68,21 @@ This starter template provides a solid foundation for building scalable, maintai
 ├── modules/
 │   └── Auth/                              # Example Auth module
 │       ├── DTOs/                          # Data Transfer Objects
-│       ├── Http/Controllers/              # HTTP layer
+│       │   ├── User/Requests/             # Request DTOs
+│       │   └── User/Responses/            # Response DTOs
+│       ├── Http/
+│       │   ├── Controllers/Api/           # Client-specific controllers
+│       │   │   ├── Admin/                 # Admin controllers
+│       │   │   ├── Web/                   # Web controllers
+│       │   │   └── Mobile/                # Mobile controllers
+│       │   ├── Requests/Api/              # Client-specific form requests
+│       │   │   ├── Admin/User/            # Admin user requests
+│       │   │   ├── Web/User/              # Web user requests
+│       │   │   └── Mobile/User/           # Mobile user requests
+│       │   └── Resources/Api/             # Client-specific JSON resources
+│       │       ├── Admin/User/            # Admin user resources
+│       │       ├── Web/User/              # Web user resources
+│       │       └── Mobile/User/           # Mobile user resources
 │       ├── Services/                      # Business logic layer
 │       │   ├── Auth/                      # Authentication services
 │       │   └── User/                      # User management services
@@ -127,6 +151,29 @@ This creates a complete module structure with:
 - Feature and unit tests
 - API routes
 
+### Generating Components
+
+Create client-specific components for your modules:
+
+```bash
+# Generate controllers for different clients
+php artisan make:controller Product Product Admin
+php artisan make:controller Product Product Web
+php artisan make:controller Product Product Mobile
+
+# Generate form requests
+php artisan make:request Product Product StoreProduct Admin
+php artisan make:request Product Product UpdateProduct Web
+
+# Generate JSON resources  
+php artisan make:resource Product Product ProductList Admin
+php artisan make:resource Product Product ProductCard Web
+
+# Generate DTOs
+php artisan make:dto Product Product CreateProduct request
+php artisan make:dto Product Product ProductDetail response
+```
+
 ## 🏗️ **Architecture Patterns**
 
 ### Service Layer Architecture
@@ -160,26 +207,55 @@ class Product extends Model
 }
 ```
 
-### Standardized API Responses
+### Client-Specific Architecture
 ```php
-// Controllers use consistent response formatting
-public function store(Request $request): JsonResponse
+// Admin Controller - Full access with detailed responses
+class AdminProductController extends ApiController
 {
-    $dto = CreateProductRequestDTO::fromArray($request->all());
-    $response = $this->create_product_service->execute($dto);
-    
-    return $this->response($response); // Auto-handles success/error based on status code
+    public function index(): JsonResponse
+    {
+        $products = Product::with(['category', 'createdBy'])->get();
+        return $this->response([
+            'products' => AdminProductListResource::collection($products)
+        ]);
+    }
+}
+
+// Web Controller - Public-safe data only
+class WebProductController extends ApiController
+{
+    public function index(): JsonResponse
+    {
+        $products = Product::active()->get();
+        return $this->response([
+            'products' => WebProductCardResource::collection($products)
+        ]);
+    }
+}
+
+// Mobile Controller - Optimized for bandwidth
+class MobileProductController extends ApiController
+{
+    public function index(): JsonResponse
+    {
+        $products = Product::active()->select(['id', 'name', 'price'])->get();
+        return $this->response([
+            'products' => MobileProductResource::collection($products)
+        ]);
+    }
 }
 ```
 
 ## 📊 **Current Status**
 
 - ✅ **Core Architecture** - Modular SOA foundation complete
+- ✅ **Client-Type Separation** - Admin/Web/Mobile architecture implemented
 - ✅ **Auth Module** - Complete authentication system with JWT
 - ✅ **Service Layer** - BaseService pattern with comprehensive error handling  
-- ✅ **Module Generator** - Automated code generation for new modules
+- ✅ **Code Generation Suite** - Commands for controllers, requests, resources, DTOs
 - ✅ **Factory Discovery** - Automatic model factory resolution
 - ✅ **Testing Framework** - Modular test structure with comprehensive coverage
+- ✅ **Modular Localization** - Translation system integrated per module
 
 ## 🗺️ **Roadmap & Future Plans**
 
@@ -234,8 +310,14 @@ vendor/bin/phpunit --coverage-html coverage/
 
 ## 📚 **Documentation**
 
-- [Modular Database Architecture](docs/MODULAR_DATABASE.md)
-- [API Documentation](docs/API.md) *(Coming Soon)*
+Comprehensive documentation is available in the [`docs/`](docs/) folder, including:
+- **Architecture Guides** - Modular database and localization patterns
+- **Command Documentation** - Detailed guides for all code generation commands
+- **Best Practices** - Development patterns and conventions
+
+Key documentation:
+- [Command Reference](docs/commands/) - All available artisan commands
+- [Modular Database](docs/MODULAR_DATABASE.md) - Database architecture patterns
 
 ## 🙏 **Acknowledgments**
 
