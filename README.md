@@ -32,7 +32,6 @@ This starter template provides a solid foundation for building scalable, maintai
 ### 🧪 **Testing & Quality**
 - **Modular Test Structure** - Tests organized per module
 - **Comprehensive Test Coverage** - Unit and feature tests included
-- **Factory Discovery System** - Automatic model factory resolution
 
 ### 📱 **Client-Type Architecture**
 - **Multi-Client Support** - Separate API endpoints for Admin, Web, and Mobile clients
@@ -44,7 +43,6 @@ This starter template provides a solid foundation for building scalable, maintai
 
 ### 🗄️ **Database Architecture**  
 - **Module-Specific Databases** - Each module manages its own migrations, factories, seeders
-- **Automatic Factory Discovery** - `HasModularFactory` trait eliminates boilerplate
 - **Migration Organization** - Clear separation of database concerns per module
 
 ### 🎨 **Developer Experience**
@@ -179,7 +177,7 @@ php artisan make:dto Product Product ProductDetail response
 ### Service Layer Architecture
 ```php
 // Each service extends BaseService for consistency
-class CreateProductService extends BaseService
+class CreateProductService extends BaseService implements // Contract/Interface
 {
     protected function rules(): array
     {
@@ -195,15 +193,6 @@ class CreateProductService extends BaseService
         $product = Product::create($dto);
         $this->results['data'] = ProductResponseDTO::fromModel($product);
     }
-}
-```
-
-### Modular Factory Discovery
-```php
-// Models automatically discover their factories
-class Product extends Model
-{
-    use HasModularFactory; // Automatically finds Modules\Product\Database\Factories\ProductFactory
 }
 ```
 
@@ -250,7 +239,7 @@ class MobileProductController extends ApiController
 
 - ✅ **Core Architecture** - Modular SOA foundation complete
 - ✅ **Client-Type Separation** - Admin/Web/Mobile architecture implemented
-- ✅ **Auth Module** - Complete authentication system with JWT
+- ✅ **Auth Module** - Complete authentication system with Passport
 - ✅ **Service Layer** - BaseService pattern with comprehensive error handling  
 - ✅ **Code Generation Suite** - Commands for controllers, requests, resources, DTOs
 - ✅ **Factory Discovery** - Automatic model factory resolution
