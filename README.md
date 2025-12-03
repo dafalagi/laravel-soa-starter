@@ -64,9 +64,9 @@ graph TB
 
     %% API Gateway Layer
     subgraph Gateway ["🛣️ API Gateway"]
-        AdminRoutes["/api/admin/*"]
-        WebRoutes["/api/web/*"]
-        MobileRoutes["/api/mobile/*"]
+        AdminRoutes["/api/v*/admin/*"]
+        WebRoutes["/api/v*/web/*"]
+        MobileRoutes["/api/v*/mobile/*"]
     end
 
     %% Application Layer
