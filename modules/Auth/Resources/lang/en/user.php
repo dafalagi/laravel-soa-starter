@@ -19,4 +19,8 @@ return [
     'store' => [
         'success' => 'User successfully stored.',
     ],
+
+    'update' => [
+        'success' => 'User successfully updated.',
+    ],
 ];
