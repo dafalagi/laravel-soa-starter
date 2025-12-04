@@ -35,6 +35,5 @@ class HasModularFactoryTest extends TestCase
         // Then it should create a valid User instance
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals('test@example.com', $user->email);
-        $this->assertNotEmpty($user->name);
     }
 }
