@@ -49,10 +49,9 @@ Examples of behavior that contributes to creating a positive environment include
    php artisan key:generate
    ```
 
-4. **Run migrations and seeders**
+4. **Database and Passport setup**
    ```bash
-   php artisan migrate
-   php artisan db:seed
+   php artisan db:migrate-fresh
    ```
 
 5. **Run tests to ensure everything works**
@@ -187,7 +186,7 @@ namespace Modules\Example\Services;
 use App\Services\BaseService;
 use Modules\Example\DTOs\ExampleRequestDTO;
 
-class ExampleService extends BaseService
+class ExampleService extends BaseService implements // Contract/Interface
 {
     /**
      * Process the example request.

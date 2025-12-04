@@ -244,10 +244,9 @@ graph TB
    php artisan key:generate
    ```
 
-4. **Database setup**
+4. **Database and Passport setup**
    ```bash
-   php artisan migrate
-   php artisan db:seed
+   php artisan db:migrate-fresh
    ```
 
 5. **Run the application**
