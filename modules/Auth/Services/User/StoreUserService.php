@@ -44,7 +44,7 @@ class StoreUserService extends BaseService implements StoreUserServiceInterface
     {
         return [
             'email' => ['required', 'email', new UniqueData(new User(), 'email')],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:8'],
         ];
     }
 }
