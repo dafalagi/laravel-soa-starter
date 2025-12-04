@@ -5,7 +5,6 @@ namespace App\Rules;
 use App\Models\BaseModel;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
 class ExistsUuid implements ValidationRule

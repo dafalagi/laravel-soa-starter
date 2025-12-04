@@ -5,18 +5,16 @@ namespace App\Rules;
 use App\Models\BaseModel;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Support\Facades\DB;
 
 class ExistsId implements ValidationRule
 {
-    protected $table, $cols, $vals, $no_deleted_at;
+    protected $table, $cols, $vals;
 
-    public function __construct($table, $cols = null, $vals = null, $no_deleted_at = false)
+    public function __construct($table, $cols = null, $vals = null)
     {
         $this->table = $table;
         $this->cols = $cols;
         $this->vals = $vals;
-        $this->no_deleted_at = $no_deleted_at;
     }
 
     /**
@@ -26,9 +24,8 @@ class ExistsId implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!$this->table instanceof \Illuminate\Database\Eloquent\Model and !$this->table instanceof BaseModel) {
-            $this->table = DB::table($this->table);
-        }
+        if (!$this->table instanceof \Illuminate\Database\Eloquent\Model and !$this->table instanceof BaseModel)
+            throw new \Exception('Table must be an instance of Eloquent Model or BaseModel');
 
         if (strpos($value, ',') !== false) {
             $splitted_value = explode(',', $value);
