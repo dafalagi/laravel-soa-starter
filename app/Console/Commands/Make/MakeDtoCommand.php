@@ -3,7 +3,6 @@
 namespace App\Console\Commands\Make;
 
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
 class MakeDtoCommand extends Command
@@ -16,14 +15,6 @@ class MakeDtoCommand extends Command
 
     protected $description = 'Create a new DTO in a specific module';
 
-    private Filesystem $filesystem;
-
-    public function __construct(Filesystem $filesystem)
-    {
-        parent::__construct();
-        $this->filesystem = $filesystem;
-    }
-
     public function handle(): int
     {
         $module_name = Str::studly($this->argument('module'));
@@ -31,19 +22,8 @@ class MakeDtoCommand extends Command
         $dto_name = Str::studly($this->argument('name'));
         $dto_type = strtolower($this->argument('type'));
 
-        // Validate module exists
-        $module_path = base_path("modules/{$module_name}");
-        if (!$this->filesystem->isDirectory($module_path)) {
-            $this->error("Module {$module_name} does not exist!");
-            return 1;
-        }
-
-        // Validate DTO type
-        $valid_types = ['request', 'response'];
-        if (!in_array($dto_type, $valid_types)) {
-            $this->error("DTO type must be one of: " . implode(', ', $valid_types));
-            return 1;
-        }
+        if (!$this->validateInputs($module_name, $feature_name, $dto_name, $dto_type))
+            return self::FAILURE;
 
         // Ensure DTO name ends with 'RequestDTO' or 'ResponseDTO'
         $type_suffix = $dto_type === 'request' ? 'RequestDTO' : 'ResponseDTO';
@@ -52,32 +32,60 @@ class MakeDtoCommand extends Command
         }
 
         // Determine directory based on type
+        $module_path = base_path("modules/{$module_name}");
         $type_folder = Str::studly($dto_type) . 's'; // Requests or Responses
         $dto_path_dir = "{$module_path}/DTOs/{$feature_name}/{$type_folder}";
         
         // Ensure directory exists
-        if (!$this->filesystem->isDirectory($dto_path_dir)) {
-            $this->filesystem->makeDirectory($dto_path_dir, 0755, true);
+        if (!is_dir($dto_path_dir)) {
+            mkdir($dto_path_dir, 0755, true);
         }
 
         $dto_path = "{$dto_path_dir}/{$dto_name}.php";
 
         // Check if DTO already exists
-        if ($this->filesystem->exists($dto_path)) {
+        if (file_exists($dto_path)) {
             $this->error("DTO {$dto_name} already exists in {$module_name} module!");
-            return 1;
+            return self::FAILURE;
         }
 
-        // Generate DTO content
-        $module_namespace = "Modules\\{$module_name}";
-        $content = $this->getDtoStub($dto_name, $module_namespace, $feature_name, $dto_type);
+        try {
+            // Generate DTO content
+            $module_namespace = "Modules\\{$module_name}";
+            $content = $this->getDtoStub($dto_name, $module_namespace, $feature_name, $dto_type);
 
-        // Create DTO file
-        $this->filesystem->put($dto_path, $content);
+            // Create DTO file
+            file_put_contents($dto_path, $content);
 
-        $this->info("DTO {$dto_name} created successfully in {$module_name} module!");
+            $this->info("DTO {$dto_name} created successfully in {$module_name} module!");
+        } catch (\Exception $e) {
+            $this->error("Failed to create DTO: " . $e->getMessage());
+            return self::FAILURE;
+        }
 
-        return 0;
+        return self::SUCCESS;
+    }
+
+    private function validateInputs(string $module, string $feature, string $dto, string $type): bool
+    {
+        if (empty($module) || empty($feature) || empty($dto) || empty($type)) {
+            $this->error('Module, feature, DTO name, and type are required.');
+            return false;
+        }
+
+        $module_path = base_path("modules/{$module}");
+        if (!is_dir($module_path)) {
+            $this->error("Module '{$module}' does not exist. Please create the module first.");
+            return false;
+        }
+
+        $valid_types = ['request', 'response'];
+        if (!in_array($type, $valid_types)) {
+            $this->error("DTO type must be one of: " . implode(', ', $valid_types));
+            return false;
+        }
+
+        return true;
     }
 
     private function getDtoStub(string $dto_name, string $module_namespace, string $feature_name, string $dto_type): string

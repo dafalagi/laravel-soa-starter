@@ -3,7 +3,6 @@
 namespace App\Console\Commands\Make;
 
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
 class MakeControllerCommand extends Command
@@ -15,26 +14,14 @@ class MakeControllerCommand extends Command
 
     protected $description = 'Create a new controller in a specific module';
 
-    private Filesystem $filesystem;
-
-    public function __construct(Filesystem $filesystem)
-    {
-        parent::__construct();
-        $this->filesystem = $filesystem;
-    }
-
     public function handle(): int
     {
         $module_name = Str::studly($this->argument('module'));
         $controller_name = Str::studly($this->argument('controller'));
         $client = Str::studly($this->argument('client'));
 
-        // Validate module exists
-        $module_path = base_path("modules/{$module_name}");
-        if (!$this->filesystem->isDirectory($module_path)) {
-            $this->error("Module {$module_name} does not exist!");
-            return 1;
-        }
+        if (!$this->validateInputs($module_name, $controller_name, $client))
+            return self::FAILURE;
 
         // Ensure controller name ends with 'Controller'
         if (Str::contains($controller_name, 'controller')) {
@@ -43,36 +30,57 @@ class MakeControllerCommand extends Command
             $controller_name .= 'Controller';
         }
 
-        // Ensure client argument is valid
-        $valid_clients = ['Web', 'Admin', 'Mobile'];
-        if (!in_array($client, $valid_clients)) {
-            $this->error("Client must be one of: " . implode(', ', $valid_clients));
-            return 1;
-        }
-
+        $module_path = base_path("modules/{$module_name}");
         $controller_path = "{$module_path}/Http/Controllers/Api/{$client}/{$controller_name}.php";
 
         // Check if controller already exists
-        if ($this->filesystem->exists($controller_path)) {
+        if (file_exists($controller_path)) {
             $this->error("Controller {$controller_name} already exists in {$module_name} module!");
-            return 1;
+            return self::FAILURE;
         }
 
-        // Generate controller content
-        $module_namespace = "Modules\\{$module_name}";
-        $client_namespace = "Api\\{$client}";
-        $content = $this->getControllerStub(
-            $controller_name, 
-            $module_namespace,
-            $client_namespace,
-        );
+        try {
+            // Generate controller content
+            $module_namespace = "Modules\\{$module_name}";
+            $client_namespace = "Api\\{$client}";
+            $content = $this->getControllerStub(
+                $controller_name, 
+                $module_namespace,
+                $client_namespace,
+            );
 
-        // Create controller file
-        $this->filesystem->put($controller_path, $content);
+            // Create controller file
+            file_put_contents($controller_path, $content);
 
-        $this->info("Controller {$controller_name} created successfully in {$module_name} module!");
+            $this->info("Controller {$controller_name} created successfully in {$module_name} module!");
+        } catch (\Exception $e) {
+            $this->error("Failed to create controller: " . $e->getMessage());
+            return self::FAILURE;
+        }
 
-        return 0;
+        return self::SUCCESS;
+    }
+
+    private function validateInputs(string $module, string $controller, string $client): bool
+    {
+        if (empty($module) || empty($controller) || empty($client)) {
+            $this->error('Module, controller, and client are required.');
+            return false;
+        }
+
+        $module_path = base_path("modules/{$module}");
+        if (!is_dir($module_path)) {
+            $this->error("Module {$module} does not exist!");
+            return false;
+        }
+
+        $valid_clients = ['Web', 'Admin', 'Mobile'];
+        if (!in_array($client, $valid_clients)) {
+            $this->error("Client must be one of: " . implode(', ', $valid_clients));
+            return false;
+        }
+
+        return true;
     }
 
     private function getControllerStub(

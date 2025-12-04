@@ -23,9 +23,8 @@ class MakeServiceCommand extends Command
         $force = $this->option('force');
 
         // Validate inputs
-        if (!$this->validateInputs($module, $feature, $service)) {
+        if (!$this->validateInputs($module, $feature, $service))
             return self::FAILURE;
-        }
 
         $service_name = Str::studly($service);
         $feature_name = Str::studly($feature);

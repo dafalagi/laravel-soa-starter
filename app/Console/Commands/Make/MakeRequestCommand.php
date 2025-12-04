@@ -3,7 +3,6 @@
 namespace App\Console\Commands\Make;
 
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
 class MakeRequestCommand extends Command
@@ -16,14 +15,6 @@ class MakeRequestCommand extends Command
 
     protected $description = 'Create a new form request in a specific module';
 
-    private Filesystem $filesystem;
-
-    public function __construct(Filesystem $filesystem)
-    {
-        parent::__construct();
-        $this->filesystem = $filesystem;
-    }
-
     public function handle(): int
     {
         $module_name = Str::studly($this->argument('module'));
@@ -31,12 +22,8 @@ class MakeRequestCommand extends Command
         $request_name = Str::studly($this->argument('request'));
         $client = Str::studly($this->argument('client'));
 
-        // Validate module exists
-        $module_path = base_path("modules/{$module_name}");
-        if (!$this->filesystem->isDirectory($module_path)) {
-            $this->error("Module {$module_name} does not exist!");
-            return 1;
-        }
+        if (!$this->validateInputs($module_name, $feature_name, $request_name, $client))
+            return self::FAILURE;
 
         // Ensure request name ends with 'Request'
         if (Str::contains($request_name, 'request')) {
@@ -45,42 +32,61 @@ class MakeRequestCommand extends Command
             $request_name .= 'Request';
         }
 
+        // Ensure feature directory exists
+        $module_path = base_path("modules/{$module_name}");
+        $requests_path = "{$module_path}/Http/Requests/Api/{$client}/{$feature_name}";
+        if (!is_dir($requests_path))
+            mkdir($requests_path, 0755, true);
+
+        $request_path = "{$requests_path}/{$request_name}.php";
+        if (file_exists($request_path)) {
+            $this->error("Request {$request_name} already exists in {$module_name} module!");
+            return self::FAILURE;
+        }
+
+        try {
+            // Generate request content
+            $module_namespace = "Modules\\{$module_name}";
+            $feature_namespace = "Api\\{$client}\\{$feature_name}";
+            $content = $this->getRequestStub(
+                $request_name,
+                $module_namespace,
+                $feature_namespace
+            );
+
+            // Create request file
+            file_put_contents($request_path, $content);
+
+            $this->info("Request {$request_name} created successfully in {$module_name} module!");
+        } catch (\Exception $e) {
+            $this->error("Failed to create request: " . $e->getMessage());
+            return self::FAILURE;
+        }
+
+        return self::SUCCESS;
+    }
+
+    private function validateInputs(string $module, string $feature, string $request, string $client): bool
+    {
+        if (empty($module) || empty($feature) || empty($request)) {
+            $this->error('Module, feature, and request name are required.');
+            return false;
+        }
+
+        $module_path = base_path("modules/{$module}");
+        if (!is_dir($module_path)) {
+            $this->error("Module '{$module}' does not exist. Please create the module first.");
+            return false;
+        }
+
         // Ensure client argument is valid
         $valid_clients = ['Web', 'Admin', 'Mobile'];
         if (!in_array($client, $valid_clients)) {
             $this->error("Client must be one of: " . implode(', ', $valid_clients));
-            return 1;
+            return false;
         }
 
-        // Ensure feature directory exists
-        $requests_path = "{$module_path}/Http/Requests/Api/{$client}/{$feature_name}";
-        if (!$this->filesystem->isDirectory($requests_path)) {
-            $this->filesystem->makeDirectory($requests_path, 0755, true);
-        }
-
-        $request_path = "{$module_path}/Http/Requests/Api/{$client}/{$feature_name}/{$request_name}.php";
-
-        // Check if request already exists
-        if ($this->filesystem->exists($request_path)) {
-            $this->error("Request {$request_name} already exists in {$module_name} module!");
-            return 1;
-        }
-
-        // Generate request content
-        $module_namespace = "Modules\\{$module_name}";
-        $feature_namespace = "Api\\{$client}\\{$feature_name}";
-        $content = $this->getRequestStub(
-            $request_name,
-            $module_namespace,
-            $feature_namespace
-        );
-
-        // Create request file
-        $this->filesystem->put($request_path, $content);
-
-        $this->info("Request {$request_name} created successfully in {$module_name} module!");
-
-        return 0;
+        return true;
     }
 
     private function getRequestStub(
