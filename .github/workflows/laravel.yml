@@ -28,6 +28,10 @@ jobs:
       run: |
         mkdir -p database
         touch database/database.sqlite
+    - name: Setup Passport Keys
+      run: php artisan passport:keys --force
+    - name: Setup Passport Clients
+      run: php artisan passport:client --personal --name="Personal Access Client" --no-interaction
     - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
       env:
         DB_CONNECTION: sqlite
