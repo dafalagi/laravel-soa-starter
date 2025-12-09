@@ -31,6 +31,9 @@ jobs:
     - name: Setup Passport Keys
       run: php artisan passport:keys --force
     - name: Setup Passport Clients
+      env:
+        DB_CONNECTION: sqlite
+        DB_DATABASE: database/database.sqlite
       run: php artisan passport:client --personal --name="Personal Access Client" --no-interaction
     - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
       env:
