@@ -9,7 +9,7 @@ class UpdateUserRequestDTO
         public readonly ?string $user_uuid,
         public readonly ?string $email,
         public readonly ?string $password,
-        public readonly int $version,
+        public readonly ?int $version,
     ) {}
 
     public static function fromArray(array $data): self
@@ -19,7 +19,7 @@ class UpdateUserRequestDTO
             user_uuid: $data['user_uuid'] ?? null,
             email: $data['email'] ?? null,
             password: $data['password'] ?? null,
-            version: $data['version'] ?? 0,
+            version: $data['version'] ?? null,
         );
     }
 

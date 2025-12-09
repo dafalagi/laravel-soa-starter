@@ -49,7 +49,7 @@ class UpdateUserService extends BaseService implements UpdateUserServiceInterfac
     {
         return [
             'user_id' => ['nullable', new ExistsId(new User())],
-            'user_uuid' => ['required_without:user_id', new ExistsUuid(new User())],
+            'user_uuid' => ['nullable', 'required_without:user_id', new ExistsUuid(new User())],
 
             'email' => ['nullable', 'email', 'max:255'],
             'password' => ['nullable', 'string', 'min:8'],
