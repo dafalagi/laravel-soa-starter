@@ -37,7 +37,9 @@ class StoreUserServiceTest extends TestCase
         // Assert
         $this->assertArrayHasKey('data', $result);
         $this->assertInstanceOf(UserResponseDTO::class, $result['data']);
+
         $this->assertArrayHasKey('message', $result);
+        $this->assertEquals(__('auth::user.store.success'), $result['message']);
         
         $this->assertDatabaseHas('auth_users', [
             'email' => 'john@example.com'

@@ -42,8 +42,10 @@ class UpdateUserServiceTest extends TestCase
 
         // Assert
         $this->assertArrayHasKey('data', $result);
-        // $this->assertInstanceOf(UserResponseDTO::class, $result['data']);
+        $this->assertInstanceOf(UserResponseDTO::class, $result['data']);
+
         $this->assertArrayHasKey('message', $result);
+        $this->assertEquals(__('auth::user.update.success'), $result['message']);
         
         $this->assertDatabaseHas('auth_users', [
             'id' => $user->id,
