@@ -19,6 +19,8 @@ class AuthModuleServiceProvider extends ServiceProvider
         /** User */
         $this->app->bind(\Modules\Auth\Services\User\Contracts\GetUserServiceInterface::class, \Modules\Auth\Services\User\GetUserService::class);
         $this->app->bind(\Modules\Auth\Services\User\Contracts\StoreUserServiceInterface::class, \Modules\Auth\Services\User\StoreUserService::class);
+        $this->app->bind(\Modules\Auth\Services\User\Contracts\UpdateUserServiceInterface::class, \Modules\Auth\Services\User\UpdateUserService::class);
+        $this->app->bind(\Modules\Auth\Services\User\Contracts\DeleteUserServiceInterface::class, \Modules\Auth\Services\User\DeleteUserService::class);
     }
 
     /**
