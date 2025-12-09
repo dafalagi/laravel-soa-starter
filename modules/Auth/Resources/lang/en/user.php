@@ -23,4 +23,8 @@ return [
     'update' => [
         'success' => 'User successfully updated.',
     ],
+
+    'delete' => [
+        'success' => 'User successfully deleted.',
+    ],
 ];
