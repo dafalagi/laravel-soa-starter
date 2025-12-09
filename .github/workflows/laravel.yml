@@ -28,6 +28,11 @@ jobs:
       run: |
         mkdir -p database
         touch database/database.sqlite
+    - name: Run Migrations
+      env:
+        DB_CONNECTION: sqlite
+        DB_DATABASE: database/database.sqlite
+      run: php artisan migrate --no-interaction --force
     - name: Setup Passport Keys
       run: php artisan passport:keys --force
     - name: Setup Passport Clients
