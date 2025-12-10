@@ -6,20 +6,6 @@ Thank you for your interest in contributing to Laravel SOA Starter! We welcome c
 
 This project and everyone participating in it is governed by our Code of Conduct. By participating, you are expected to uphold this code. Please report unacceptable behavior to the project maintainers.
 
-### Our Pledge
-
-We pledge to make participation in our project a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
-
-### Our Standards
-
-Examples of behavior that contributes to creating a positive environment include:
-
-- Using welcoming and inclusive language
-- Being respectful of differing viewpoints and experiences
-- Gracefully accepting constructive criticism
-- Focusing on what is best for the community
-- Showing empathy towards other community members
-
 ## 🚀 Getting Started
 
 ### Prerequisites
