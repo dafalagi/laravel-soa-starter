@@ -20,7 +20,7 @@
             <!-- <directory>tests/Feature</directory> -->
 
             <!-- Auth -->
-            <!-- <directory>modules/Auth/Tests/Feature/Auth</directory> -->
+            <directory>modules/Auth/Tests/Feature/User</directory>
         </testsuite>
     </testsuites>
     <source>
