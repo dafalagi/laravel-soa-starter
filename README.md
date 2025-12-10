@@ -274,7 +274,7 @@ This creates a complete module structure consisted of:
 
 ### Generating Components
 
-The complete list of available component generator can be checked at [Make Commands](app/Console/Commands/Make/)
+The complete list of available component generator can be checked at [make commands](app/Console/Commands/Make/)
 
 ## 🏗️ **Architecture Patterns**
 
@@ -349,6 +349,8 @@ class MobileProductController extends ApiController
 - ✅ **Factory Discovery** - Automatic model factory resolution
 - ✅ **Testing Framework** - Modular test structure with comprehensive coverage
 - ✅ **Modular Localization** - Translation system integrated per module
+- ✅ **CI/CD Pipeline** - GitHub Actions for automated testing and deployment
+- ✅ **API Versioning** - Support for multiple API versions
 
 ## 🗺️ **Roadmap & Future Plans**
 
@@ -359,14 +361,12 @@ class MobileProductController extends ApiController
 - [ ] **Permission System** - Role-based access control (RBAC)
 
 ### Phase 2: Advanced Features
-- [ ] **API Versioning** - Support for multiple API versions
 - [ ] **Queue System** - Background job processing per module
 - [ ] **File Management** - File upload/storage service with cloud support
 - [ ] **Notification System** - Multi-channel notifications (email, SMS, push)
 
 ### Phase 3: DevOps & Monitoring
 - [ ] **Docker Support** - Complete containerization setup
-- [ ] **CI/CD Pipeline** - GitHub Actions for automated testing and deployment
 - [ ] **Monitoring & Logging** - Comprehensive application monitoring
 - [ ] **Performance Optimization** - Database query optimization and caching strategies
 
