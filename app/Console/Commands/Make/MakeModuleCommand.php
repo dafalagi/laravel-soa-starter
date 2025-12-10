@@ -3,7 +3,6 @@
 namespace App\Console\Commands\Make;
 
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
 class MakeModuleCommand extends Command
@@ -18,63 +17,63 @@ class MakeModuleCommand extends Command
      */
     protected $description = 'Create a new module with all necessary files and folders';
 
-    private Filesystem $filesystem;
-
-    public function __construct(Filesystem $filesystem)
-    {
-        parent::__construct();
-        $this->filesystem = $filesystem;
-    }
-
     /**
      * Execute the console command.
      */
     public function handle(): int
     {
-        $moduleName = ucfirst($this->argument('name'));
-        $moduleNamespace = "Modules\\{$moduleName}";
-        $modulePath = base_path("modules/{$moduleName}");
+        $module_name = Str::studly($this->argument('name'));
+        $module_namespace = "Modules\\{$module_name}";
 
-        if ($this->filesystem->exists($modulePath)) {
-            $this->error("Module {$moduleName} already exists!");
-            return 1;
+        if (!$this->validateInputs($module_name))
+            return self::FAILURE;
+
+        $this->info("Creating module: {$module_name}");
+
+        try {
+            // Create module directories
+            $module_path = base_path("modules/{$module_name}");
+            $this->createDirectories($module_path);
+
+            // Create module files
+            $this->createServiceProvider($module_path, $module_name, $module_namespace);
+
+            $this->info("Module {$module_name} created successfully!");
+            $this->info("Don't forget to register the service provider in bootstrap/providers.php:");
+            $this->line("{$module_namespace}\\Providers\\{$module_name}ModuleServiceProvider::class,");
+        } catch (\Exception $e) {
+            $this->error("Failed to create module: " . $e->getMessage());
+            return self::FAILURE;
         }
 
-        $this->info("Creating module: {$moduleName}");
-
-        // Create module directories
-        $this->createDirectories($modulePath);
-
-        // Create module files
-        $this->createServiceProvider($modulePath, $moduleName, $moduleNamespace);
-        $this->createController($modulePath, $moduleName, $moduleNamespace);
-        $this->createService($modulePath, $moduleName, $moduleNamespace);
-        $this->createServiceContract($modulePath, $moduleName, $moduleNamespace);
-        $this->createDTO($modulePath, $moduleName, $moduleNamespace);
-        $this->createRoutes($modulePath, $moduleName);
-        $this->createTest($modulePath, $moduleName, $moduleNamespace);
-        $this->createMigration($modulePath, $moduleName, $moduleNamespace);
-        $this->createFactory($modulePath, $moduleName, $moduleNamespace);
-        $this->createSeeder($modulePath, $moduleName, $moduleNamespace);
-        $this->createModel($modulePath, $moduleName, $moduleNamespace);
-        $this->createTranslations($modulePath, $moduleName);
-
-        $this->info("Module {$moduleName} created successfully!");
-        $this->info("Don't forget to register the service provider in bootstrap/providers.php:");
-        $this->line("{$moduleNamespace}\\Providers\\{$moduleName}ServiceProvider::class,");
-
-        return 0;
+        return self::SUCCESS;
     }
 
-    private function createDirectories(string $modulePath): void
+    private function validateInputs(string $module_name): bool
+    {
+        if (empty($module_name)) {
+            $this->error("Module name cannot be empty.");
+            return false;
+        }
+
+        $module_path = base_path("modules/{$module_name}");
+        if (file_exists($module_path)) {
+            $this->error("Module {$module_name} already exists!");
+            return false;
+        }
+
+        return true;
+    }
+
+    private function createDirectories(string $module_path): void
     {
         $directories = [
             'DTOs',
-            'Http/Controllers',
+            'Http/Controllers/Api',
             'Models',
             'Providers',
             'Routes',
-            'Services/Contracts',
+            'Services',
             'Tests/Feature',
             'Tests/Unit',
             'Database/Migrations',
@@ -84,71 +83,33 @@ class MakeModuleCommand extends Command
         ];
 
         foreach ($directories as $directory) {
-            $this->filesystem->makeDirectory("{$modulePath}/{$directory}", 0755, true);
+            mkdir("{$module_path}/{$directory}", 0755, true);
         }
     }
 
-    private function createServiceProvider(string $modulePath, string $moduleName, string $moduleNamespace): void
+    private function createServiceProvider(string $module_path, string $module_name, string $module_namespace): void
     {
-        $content = $this->getServiceProviderStub($moduleName, $moduleNamespace);
-        $this->filesystem->put("{$modulePath}/Providers/{$moduleName}ServiceProvider.php", $content);
+        $content = $this->getServiceProviderStub($module_name, $module_namespace);
+        file_put_contents("{$module_path}/Providers/{$module_name}ModuleServiceProvider.php", $content);
     }
 
-    private function createController(string $modulePath, string $moduleName, string $moduleNamespace): void
-    {
-        $content = $this->getControllerStub($moduleName, $moduleNamespace);
-        $this->filesystem->put("{$modulePath}/Http/Controllers/{$moduleName}Controller.php", $content);
-    }
-
-    private function createService(string $modulePath, string $moduleName, string $moduleNamespace): void
-    {
-        $content = $this->getServiceStub($moduleName, $moduleNamespace);
-        $this->filesystem->put("{$modulePath}/Services/{$moduleName}Service.php", $content);
-    }
-
-    private function createServiceContract(string $modulePath, string $moduleName, string $moduleNamespace): void
-    {
-        $content = $this->getServiceContractStub($moduleName, $moduleNamespace);
-        $this->filesystem->put("{$modulePath}/Services/Contracts/{$moduleName}ServiceInterface.php", $content);
-    }
-
-    private function createDTO(string $modulePath, string $moduleName, string $moduleNamespace): void
-    {
-        $content = $this->getDTOStub($moduleName, $moduleNamespace);
-        $this->filesystem->put("{$modulePath}/DTOs/{$moduleName}DTO.php", $content);
-    }
-
-    private function createRoutes(string $modulePath, string $moduleName): void
-    {
-        $content = $this->getRoutesStub($moduleName);
-        $this->filesystem->put("{$modulePath}/Routes/api.php", $content);
-    }
-
-    private function createTest(string $modulePath, string $moduleName, string $moduleNamespace): void
-    {
-        $content = $this->getTestStub($moduleName, $moduleNamespace);
-        $this->filesystem->put("{$modulePath}/Tests/Feature/{$moduleName}ControllerTest.php", $content);
-    }
-
-    private function getServiceProviderStub(string $moduleName, string $moduleNamespace): string
+    private function getServiceProviderStub(string $module_name, string $module_namespace): string
     {
         return "<?php
 
-namespace {$moduleNamespace}\\Providers;
+namespace {$module_namespace}\\Providers;
 
 use Illuminate\\Support\\ServiceProvider;
-use {$moduleNamespace}\\Services\\{$moduleName}Service;
-use {$moduleNamespace}\\Services\\Contracts\\{$moduleName}ServiceInterface;
 
-class {$moduleName}ServiceProvider extends ServiceProvider
+class {$module_name}ModuleServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
      */
     public function register(): void
     {
-        // Register service contracts
-        \$this->app->bind({$moduleName}ServiceInterface::class, {$moduleName}Service::class);
+        /** Some Feature */
+        // \$this->app->bind(SomeServiceInterface::class, SomeService::class);
     }
 
     /**
@@ -164,6 +125,11 @@ class {$moduleName}ServiceProvider extends ServiceProvider
         
         // Load module translations
         \$this->loadTranslations();
+
+        // Register module commands
+        if (\$this->app->runningInConsole()) {
+            \$this->registerCommands();
+        }
     }
 
     /**
@@ -193,517 +159,19 @@ class {$moduleName}ServiceProvider extends ServiceProvider
     {
         \$translationPath = __DIR__ . '/../Resources/lang';
         if (is_dir(\$translationPath)) {
-            \$this->loadTranslationsFrom(\$translationPath, '" . strtolower($moduleName) . "');
+            \$this->loadTranslationsFrom(\$translationPath, '" . strtolower($module_name) . "');
         }
     }
-}
-";
-    }
-
-    private function getControllerStub(string $moduleName, string $moduleNamespace): string
-    {
-        $routePrefix = Str::kebab($moduleName);
-        return "<?php
-
-namespace {$moduleNamespace}\\Http\\Controllers;
-
-use App\\Http\\Controllers\\Controller;
-use App\\Http\\Traits\\ApiResponse;
-use Illuminate\\Http\\JsonResponse;
-use Illuminate\\Http\\Request;
-use {$moduleNamespace}\\Services\\Contracts\\{$moduleName}ServiceInterface;
-
-class {$moduleName}Controller extends Controller
-{
-    use ApiResponse;
-
-    public function __construct(
-        private readonly {$moduleName}ServiceInterface \$service
-    ) {}
 
     /**
-     * Display a listing of the resource.
+     * Register module commands.
      */
-    public function index(): JsonResponse
+    private function registerCommands(): void
     {
-        // TODO: Implement index method
-        return \$this->successResponse('List retrieved successfully', []);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request \$request): JsonResponse
-    {
-        // TODO: Implement store method
-        return \$this->successResponse('Resource created successfully', [], 201);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string \$id): JsonResponse
-    {
-        // TODO: Implement show method
-        return \$this->successResponse('Resource retrieved successfully', []);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request \$request, string \$id): JsonResponse
-    {
-        // TODO: Implement update method
-        return \$this->successResponse('Resource updated successfully');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string \$id): JsonResponse
-    {
-        // TODO: Implement destroy method
-        return \$this->successResponse('Resource deleted successfully');
+        // Register any module-specific commands here
+        // \$this->commands([]);
     }
 }
-";
-    }
-
-    private function getServiceStub(string $moduleName, string $moduleNamespace): string
-    {
-        return "<?php
-
-namespace {$moduleNamespace}\\Services;
-
-use {$moduleNamespace}\\Services\\Contracts\\{$moduleName}ServiceInterface;
-
-class {$moduleName}Service implements {$moduleName}ServiceInterface
-{
-    /**
-     * Get all items.
-     */
-    public function get_all(): array
-    {
-        // TODO: Implement business logic
-        return [];
-    }
-
-    /**
-     * Get item by ID.
-     */
-    public function get_by_id(int \$id): ?array
-    {
-        // TODO: Implement business logic
-        return null;
-    }
-
-    /**
-     * Create new item.
-     */
-    public function create(array \$data): array
-    {
-        // TODO: Implement business logic
-        return [];
-    }
-
-    /**
-     * Update item.
-     */
-    public function update(int \$id, array \$data): bool
-    {
-        // TODO: Implement business logic
-        return true;
-    }
-
-    /**
-     * Delete item.
-     */
-    public function delete(int \$id): bool
-    {
-        // TODO: Implement business logic
-        return true;
-    }
-}
-";
-    }
-
-    private function getServiceContractStub(string $moduleName, string $moduleNamespace): string
-    {
-        return "<?php
-
-namespace {$moduleNamespace}\\Services\\Contracts;
-
-interface {$moduleName}ServiceInterface
-{
-    /**
-     * Get all items.
-     */
-    public function get_all(): array;
-
-    /**
-     * Get item by ID.
-     */
-    public function get_by_id(int \$id): ?array;
-
-    /**
-     * Create new item.
-     */
-    public function create(array \$data): array;
-
-    /**
-     * Update item.
-     */
-    public function update(int \$id, array \$data): bool;
-
-    /**
-     * Delete item.
-     */
-    public function delete(int \$id): bool;
-}
-";
-    }
-
-    private function getDTOStub(string $moduleName, string $moduleNamespace): string
-    {
-        return "<?php
-
-namespace {$moduleNamespace}\\DTOs;
-
-class {$moduleName}DTO
-{
-    public function __construct(
-        // TODO: Add properties
-    ) {}
-
-    public static function fromArray(array \$data): self
-    {
-        return new self(
-            // TODO: Map array data to properties
-        );
-    }
-
-    public function toArray(): array
-    {
-        return [
-            // TODO: Map properties to array
-        ];
-    }
-}
-";
-    }
-
-    private function getRoutesStub(string $moduleName): string
-    {
-        $routePrefix = Str::kebab($moduleName);
-        $controllerName = "{$moduleName}Controller";
-        
-        return "<?php
-
-use Illuminate\\Support\\Facades\\Route;
-use Modules\\{$moduleName}\\Http\\Controllers\\{$controllerName};
-
-/*
-|--------------------------------------------------------------------------
-| {$moduleName} Module API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for the {$moduleName} module. These
-| routes are loaded by the {$moduleName}ServiceProvider within a group which
-| is assigned the \"api\" middleware group.
-|
-*/
-
-Route::prefix('api/v1/{$routePrefix}')->middleware(['api'])->group(function () {
-    Route::get('/', [{$controllerName}::class, 'index'])->name('{$routePrefix}.index');
-    Route::post('/', [{$controllerName}::class, 'store'])->name('{$routePrefix}.store');
-    Route::get('/{id}', [{$controllerName}::class, 'show'])->name('{$routePrefix}.show');
-    Route::put('/{id}', [{$controllerName}::class, 'update'])->name('{$routePrefix}.update');
-    Route::delete('/{id}', [{$controllerName}::class, 'destroy'])->name('{$routePrefix}.destroy');
-});
-";
-    }
-
-    private function getTestStub(string $moduleName, string $moduleNamespace): string
-    {
-        $routePrefix = Str::kebab($moduleName);
-        
-        return "<?php
-
-namespace {$moduleNamespace}\\Tests\\Feature;
-
-use Illuminate\\Foundation\\Testing\\RefreshDatabase;
-use Tests\\TestCase;
-
-class {$moduleName}ControllerTest extends TestCase
-{
-    use RefreshDatabase;
-
-    public function test_can_list_{$routePrefix}(): void
-    {
-        \$response = \$this->getJson('/api/v1/{$routePrefix}');
-
-        \$response->assertStatus(200)
-            ->assertJsonStructure([
-                'success',
-                'message',
-                'data',
-            ]);
-    }
-
-    public function test_can_create_{$routePrefix}(): void
-    {
-        \$data = [
-            // TODO: Add test data
-        ];
-
-        \$response = \$this->postJson('/api/v1/{$routePrefix}', \$data);
-
-        \$response->assertStatus(201)
-            ->assertJsonStructure([
-                'success',
-                'message',
-                'data',
-            ]);
-    }
-
-    public function test_can_show_{$routePrefix}(): void
-    {
-        // TODO: Create test data
-        \$id = 1;
-
-        \$response = \$this->getJson(\"/api/v1/{$routePrefix}/{\$id}\");
-
-        \$response->assertStatus(200)
-            ->assertJsonStructure([
-                'success',
-                'message',
-                'data',
-            ]);
-    }
-
-    public function test_can_update_{$routePrefix}(): void
-    {
-        // TODO: Create test data
-        \$id = 1;
-        \$data = [
-            // TODO: Add update data
-        ];
-
-        \$response = \$this->putJson(\"/api/v1/{$routePrefix}/{\$id}\", \$data);
-
-        \$response->assertStatus(200)
-            ->assertJsonStructure([
-                'success',
-                'message',
-            ]);
-    }
-
-    public function test_can_delete_{$routePrefix}(): void
-    {
-        // TODO: Create test data
-        \$id = 1;
-
-        \$response = \$this->deleteJson(\"/api/v1/{$routePrefix}/{\$id}\");
-
-        \$response->assertStatus(200)
-            ->assertJsonStructure([
-                'success',
-                'message',
-            ]);
-    }
-}
-";
-    }
-
-    private function createMigration(string $modulePath, string $moduleName, string $moduleNamespace): void
-    {
-        $content = $this->getMigrationStub($moduleName, $moduleNamespace);
-        $timestamp = date('Y_m_d_His');
-        $tableName = Str::snake(Str::plural($moduleName));
-        $this->filesystem->put("{$modulePath}/Database/Migrations/{$timestamp}_create_{$tableName}_table.php", $content);
-    }
-
-    private function createFactory(string $modulePath, string $moduleName, string $moduleNamespace): void
-    {
-        $content = $this->getFactoryStub($moduleName, $moduleNamespace);
-        $this->filesystem->put("{$modulePath}/Database/Factories/{$moduleName}Factory.php", $content);
-    }
-
-    private function createSeeder(string $modulePath, string $moduleName, string $moduleNamespace): void
-    {
-        $content = $this->getSeederStub($moduleName, $moduleNamespace);
-        $this->filesystem->put("{$modulePath}/Database/Seeders/{$moduleName}Seeder.php", $content);
-    }
-
-    private function createModel(string $modulePath, string $moduleName, string $moduleNamespace): void
-    {
-        $content = $this->getModelStub($moduleName, $moduleNamespace);
-        $this->filesystem->put("{$modulePath}/Models/{$moduleName}.php", $content);
-    }
-
-    private function getMigrationStub(string $moduleName, string $moduleNamespace): string
-    {
-        $tableName = Str::snake(Str::plural($moduleName));
-        return "<?php
-
-use Illuminate\\Database\\Migrations\\Migration;
-use Illuminate\\Database\\Schema\\Blueprint;
-use Illuminate\\Support\\Facades\\Schema;
-
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::create('{$tableName}', function (Blueprint \$table) {
-            \$table->id();
-            \$table->string('name');
-            \$table->timestamps();
-        });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('{$tableName}');
-    }
-};
-";
-    }
-
-    private function getFactoryStub(string $moduleName, string $moduleNamespace): string
-    {
-        return "<?php
-
-namespace {$moduleNamespace}\\Database\\Factories;
-
-use Illuminate\\Database\\Eloquent\\Factories\\Factory;
-use {$moduleNamespace}\\Models\\{$moduleName};
-
-/**
- * @extends Factory<{$moduleName}>
- */
-class {$moduleName}Factory extends Factory
-{
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var class-string<\\Illuminate\\Database\\Eloquent\\Model>
-     */
-    protected \$model = {$moduleName}::class;
-
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
-    {
-        return [
-            'name' => fake()->name(),
-        ];
-    }
-}
-";
-    }
-
-    private function getSeederStub(string $moduleName, string $moduleNamespace): string
-    {
-        return "<?php
-
-namespace {$moduleNamespace}\\Database\\Seeders;
-
-use Illuminate\\Database\\Seeder;
-use {$moduleNamespace}\\Models\\{$moduleName};
-
-class {$moduleName}Seeder extends Seeder
-{
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
-    {
-        {$moduleName}::factory()->count(10)->create();
-    }
-}
-";
-    }
-
-    private function getModelStub(string $moduleName, string $moduleNamespace): string
-    {
-        return "<?php
-
-namespace {$moduleNamespace}\\Models;
-
-use App\\Traits\\HasModularFactory;
-use Illuminate\\Database\\Eloquent\\Model;
-
-class {$moduleName} extends Model
-{
-    use HasModularFactory;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected \$fillable = [
-        'name',
-    ];
-}
-";
-    }
-
-    private function createTranslations(string $modulePath, string $moduleName): void
-    {
-        $moduleKey = strtolower($moduleName);
-        $content = $this->getTranslationStub($moduleName, $moduleKey);
-        $this->filesystem->put("{$modulePath}/Resources/lang/en/{$moduleKey}.php", $content);
-    }
-
-    private function getTranslationStub(string $moduleName, string $moduleKey): string
-    {
-        return "<?php
-
-return [
-    /*
-    |--------------------------------------------------------------------------
-    | {$moduleName} Module Language Lines
-    |--------------------------------------------------------------------------
-    |
-    | The following language lines are used by the {$moduleName} module for various
-    | messages that we need to display to the user. You are free to modify
-    | these language lines according to your application's requirements.
-    |
-    */
-
-    'operations' => [
-        'created' => '{$moduleName} created successfully.',
-        'updated' => '{$moduleName} updated successfully.',
-        'deleted' => '{$moduleName} deleted successfully.',
-        'retrieved' => '{$moduleName} retrieved successfully.',
-        'not_found' => '{$moduleName} not found.',
-        'create_failed' => 'Failed to create {$moduleKey}.',
-        'update_failed' => 'Failed to update {$moduleKey}.',
-        'delete_failed' => 'Failed to delete {$moduleKey}.',
-    ],
-
-    'validation' => [
-        'name_required' => 'Name is required.',
-        'name_max' => 'Name may not be greater than 255 characters.',
-        'invalid_data' => 'The provided data is invalid.',
-    ],
-
-    'errors' => [
-        'service_unavailable' => '{$moduleName} service is temporarily unavailable.',
-        'unauthorized' => 'You are not authorized to perform this action.',
-        'forbidden' => 'Access forbidden.',
-    ],
-];
 ";
     }
 }
