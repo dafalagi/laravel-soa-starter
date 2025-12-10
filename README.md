@@ -262,37 +262,19 @@ Generate a new module with all necessary files:
 php artisan make:module Product
 ```
 
-This creates a complete module structure with:
-- Controllers with CRUD operations
-- Service layer with validation
+This creates a complete module structure consisted of:
+- API Controllers
+- Service layer
 - DTOs for data transfer
-- Models with factory discovery
+- Models
 - Database migrations, factories, seeders
 - Feature and unit tests
 - API routes
+- Localization
 
 ### Generating Components
 
-Create client-specific components for your modules:
-
-```bash
-# Generate controllers for different clients
-php artisan make:controller Product Product Admin
-php artisan make:controller Product Product Web
-php artisan make:controller Product Product Mobile
-
-# Generate form requests
-php artisan make:request Product Product StoreProduct Admin
-php artisan make:request Product Product UpdateProduct Web
-
-# Generate JSON resources  
-php artisan make:resource Product Product ProductList Admin
-php artisan make:resource Product Product ProductCard Web
-
-# Generate DTOs
-php artisan make:dto Product Product CreateProduct request
-php artisan make:dto Product Product ProductDetail response
-```
+The complete list of available component generator can be checked at [Make Commands](app/Console/Commands/Make/)
 
 ## 🏗️ **Architecture Patterns**
 
