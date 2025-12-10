@@ -37,6 +37,7 @@ class MakeModuleCommand extends Command
 
             // Create module files
             $this->createServiceProvider($module_path, $module_name, $module_namespace);
+            $this->createRoute($module_path, $module_name);
 
             $this->info("Module {$module_name} created successfully!");
             $this->info("Don't forget to register the service provider in bootstrap/providers.php:");
@@ -172,6 +173,32 @@ class {$module_name}ModuleServiceProvider extends ServiceProvider
         // \$this->commands([]);
     }
 }
+";
+    }
+
+    private function createRoute(string $module_path, string $module_name): void
+    {
+        $routes_content = $this->getRouteStub($module_name);
+        file_put_contents("{$module_path}/Routes/api.php", $routes_content);
+    }
+
+    private function getRouteStub(string $module_name): string
+    {
+        return "<?php
+
+use Illuminate\\Support\\Facades\\Route;
+
+/*|--------------------------------------------------------------------------
+| {$module_name} Module API Routes
+|--------------------------------------------------------------------------
+| Here is where you can register API routes for the {$module_name} module. These
+| routes are loaded by the {$module_name}ModuleServiceProvider within a group which
+| is assigned the \"api\" middleware group.
+|--------------------------------------------------------------------------*/
+
+Route::prefix('api/v0')->middleware(['api'])->group(function () {
+    // require __DIR__ . '/some-directory/some-routes-file.php';
+});
 ";
     }
 }
