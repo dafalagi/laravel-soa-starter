@@ -157,11 +157,21 @@ class {$dto_name}
         return array_map(fn({$model_name} \$model) => self::fromModel(\$model), \$models->all());
     }
 
-    public function toArray(): array
+    /**
+     * @param array<string>|null \$only Only these fields will be included in the output array
+     * @param array<string>|null \$except These fields will be excluded from the output array
+     */
+    public function toArray(?array \$only = null, ?array \$except = null): array
     {
-        return [
-            // TODO: Return array representation
-        ];
+        \$data = [];
+
+        if (\$only)
+            \$data = array_intersect_key(\$data, array_flip(\$only));
+
+        if (\$except)
+            \$data = array_diff_key(\$data, array_flip(\$except));
+
+        return \$data;
     }
 }
 ";

@@ -129,11 +129,21 @@ class {Name}ResponseDTO
         return array_map(fn({Feature} $model) => self::fromModel($model), $models->all());
     }
 
-    public function toArray(): array
+    /**
+     * @param array<string>|null $only Only these fields will be included in the output array
+     * @param array<string>|null $except These fields will be excluded from the output array
+     */
+    public function toArray(?array $only = null, ?array $except = null): array
     {
-        return [
-            // TODO: Return array representation
-        ];
+        $data = [];
+
+        if ($only)
+            $data = array_intersect_key($data, array_flip($only));
+
+        if ($except)
+            $data = array_diff_key($data, array_flip($except));
+
+        return $data;
     }
 }
 ```
@@ -150,8 +160,70 @@ class {Name}ResponseDTO
 - **Constructor**: Readonly properties for response data
 - **fromModel()**: Static factory method to create DTO from Eloquent model
 - **fromCollection()**: Batch convert collection of models to DTO array
-- **toArray()**: Convert DTO to array for JSON serialization
+- **toArray()**: Convert DTO to array for JSON serialization with optional field filtering
+- **Field Filtering**: Support for `$only` and `$except` parameters to control output fields
 - **Model Integration**: Automatically imports corresponding model class
+
+## Field Filtering
+
+### Overview
+Response DTOs support selective field output through two filtering mechanisms:
+
+- **`$only`**: Include only the specified fields in the output
+- **`$except`**: Exclude the specified fields from the output
+
+### Usage Examples
+
+```php
+// Return only specific fields
+$dto = UserResponseDTO::fromModel($user);
+$publicData = $dto->toArray(['uuid', 'email']); // Only UUID and email
+
+// Exclude sensitive fields
+$dto = UserResponseDTO::fromModel($user);
+$safeData = $dto->toArray(except: ['id', 'version', 'createdBy']); // All fields except these
+
+// Full data (default behavior)
+$dto = UserResponseDTO::fromModel($user);
+$fullData = $dto->toArray(); // All available fields
+```
+
+### API Response Scenarios
+
+```php
+// Public API - minimal user info
+public function publicProfile(): JsonResponse
+{
+    $user = auth()->user();
+    $dto = UserResponseDTO::fromModel($user);
+    
+    return response()->json([
+        'user' => $dto->toArray(['uuid', 'email'])
+    ]);
+}
+
+// Admin API - full user details
+public function adminUserDetail(): JsonResponse
+{
+    $user = User::findOrFail($id);
+    $dto = UserResponseDTO::fromModel($user);
+    
+    return response()->json([
+        'user' => $dto->toArray() // All fields
+    ]);
+}
+
+// Mobile API - exclude audit fields
+public function mobileUserProfile(): JsonResponse
+{
+    $user = auth()->user();
+    $dto = UserResponseDTO::fromModel($user);
+    
+    return response()->json([
+        'user' => $dto->toArray(except: ['createdBy', 'updatedBy', 'version'])
+    ]);
+}
+```
 
 ## Customization Examples
 
@@ -237,9 +309,13 @@ class UserResponseDTO
         return array_map(fn(User $user) => self::fromModel($user), $users->all());
     }
 
-    public function toArray(): array
+    /**
+     * @param array<string>|null $only Only these fields will be included in the output array
+     * @param array<string>|null $except These fields will be excluded from the output array
+     */
+    public function toArray(?array $only = null, ?array $except = null): array
     {
-        return [
+        $data = [
             'id' => $this->id,
             'uuid' => $this->uuid,
             'email' => $this->email,
@@ -250,7 +326,76 @@ class UserResponseDTO
             'createdBy' => $this->createdBy,
             'updatedBy' => $this->updatedBy,
         ];
+
+        if ($only)
+            $data = array_intersect_key($data, array_flip($only));
+
+        if ($except)
+            $data = array_diff_key($data, array_flip($except));
+
+        return $data;
     }
+}
+```
+
+## Field Filtering
+
+### Overview
+Response DTOs support selective field output through two filtering mechanisms:
+
+- **`$only`**: Include only the specified fields in the output
+- **`$except`**: Exclude the specified fields from the output
+
+### Usage Examples
+
+```php
+// Return only specific fields
+$dto = UserResponseDTO::fromModel($user);
+$publicData = $dto->toArray(['uuid', 'email']); // Only UUID and email
+
+// Exclude sensitive fields
+$dto = UserResponseDTO::fromModel($user);
+$safeData = $dto->toArray(except: ['id', 'version', 'createdBy']); // All fields except these
+
+// Full data (default behavior)
+$dto = UserResponseDTO::fromModel($user);
+$fullData = $dto->toArray(); // All available fields
+```
+
+### API Response Scenarios
+
+```php
+// Public API - minimal user info
+public function publicProfile(): JsonResponse
+{
+    $user = auth()->user();
+    $dto = UserResponseDTO::fromModel($user);
+    
+    return response()->json([
+        'user' => $dto->toArray(['uuid', 'email'])
+    ]);
+}
+
+// Admin API - full user details
+public function adminUserDetail(): JsonResponse
+{
+    $user = User::findOrFail($id);
+    $dto = UserResponseDTO::fromModel($user);
+    
+    return response()->json([
+        'user' => $dto->toArray() // All fields
+    ]);
+}
+
+// Mobile API - exclude audit fields
+public function mobileUserProfile(): JsonResponse
+{
+    $user = auth()->user();
+    $dto = UserResponseDTO::fromModel($user);
+    
+    return response()->json([
+        'user' => $dto->toArray(except: ['createdBy', 'updatedBy', 'version'])
+    ]);
 }
 ```
 
@@ -281,25 +426,39 @@ use Modules\Auth\DTOs\User\Responses\UserResponseDTO;
 
 class UserService
 {
-    public function getUserById(int $id): array
+    public function getUserById(int $id, ?array $fields = null): array
     {
         $user = User::findOrFail($id);
         $dto = UserResponseDTO::fromModel($user);
         
         return [
             'success' => true,
-            'data' => $dto->toArray(),
+            'data' => $dto->toArray($fields),
         ];
     }
     
-    public function getAllUsers(): array
+    public function getAllUsers(?array $fields = null): array
     {
         $users = User::all();
         $dtos = UserResponseDTO::fromCollection($users);
         
+        // Apply field filtering to each DTO
+        $filteredData = array_map(fn($dto) => $dto->toArray($fields), $dtos);
+        
         return [
             'success' => true,
-            'data' => $dtos,
+            'data' => $filteredData,
+        ];
+    }
+    
+    public function getPublicUserProfile(int $id): array
+    {
+        $user = User::findOrFail($id);
+        $dto = UserResponseDTO::fromModel($user);
+        
+        return [
+            'success' => true,
+            'data' => $dto->toArray(['uuid', 'email']), // Public fields only
         ];
     }
 }
