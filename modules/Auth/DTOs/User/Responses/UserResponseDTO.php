@@ -9,17 +9,17 @@ use Modules\Auth\Models\User;
 class UserResponseDTO
 {
     public function __construct(
-        public readonly int $id,
-        public readonly string $uuid,
+        public readonly ?int $id = null,
+        public readonly ?string $uuid = null,
 
-        public readonly string $email,
-        public readonly ?Carbon $email_verified_at,
+        public readonly ?string $email = null,
+        public readonly ?Carbon $email_verified_at = null,
 
-        public readonly int $version,
-        public readonly Carbon $created_at,
-        public readonly Carbon $updated_at,
-        public readonly ?User $createdBy,
-        public readonly ?User $updatedBy,
+        public readonly ?int $version = null,
+        public readonly ?Carbon $created_at = null,
+        public readonly ?Carbon $updated_at = null,
+        public readonly ?User $createdBy = null,
+        public readonly ?User $updatedBy = null,
     ) {}
 
     public static function fromModel(User $user): self
@@ -44,9 +44,13 @@ class UserResponseDTO
         return array_map(fn(User $user) => self::fromModel($user), $users->all());
     }
 
-    public function toArray(): array
+    /**
+     * @param array<string>|null $only Only these fields will be included in the output array
+     * @param array<string>|null $except These fields will be excluded from the output array
+     */
+    public function toArray(?array $only = null, ?array $except = null): array
     {
-        return [
+        $data = [
             'id' => $this->id,
             'uuid' => $this->uuid,
 
@@ -59,5 +63,13 @@ class UserResponseDTO
             'createdBy' => $this->createdBy,
             'updatedBy' => $this->updatedBy,
         ];
+
+        if ($only)
+            $data = array_intersect_key($data, array_flip($only));
+
+        if ($except)
+            $data = array_diff_key($data, array_flip($except));
+
+        return $data;
     }
 }

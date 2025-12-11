@@ -28,8 +28,16 @@ class StoreUserService extends BaseService implements StoreUserServiceInterface
         $this->prepareAuditStore($model);
         $model->save();
 
-        $this->results['data'] = UserResponseDTO::fromModel($model);
         $this->results['message'] = __('auth::user.store.success');
+        $this->results['data'] = UserResponseDTO::fromModel($model)
+            ->toArray([
+                'uuid',
+                'email',
+                'email_verified_at',
+                'version',
+                'created_at',
+                'createdBy',
+            ]);
     }
 
     private function prepare(array $dto): array
