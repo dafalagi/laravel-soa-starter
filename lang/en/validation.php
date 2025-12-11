@@ -188,6 +188,7 @@ return [
             'not_valid' => 'ID is not valid.',
             'is_empty' => 'ID field is empty.',
         ],
+        'unique_data' => 'The :attribute has already been taken.',
     ],
 
     /*
