@@ -146,8 +146,8 @@ class {$service_name} extends BaseService implements {$interface_name}
 
         // TODO: Implement the service logic here
 
-        \$this->results['data'] = []; // Replace with actual data, e.g., UserResponseDTO::fromModel(\$model);
         \$this->results['message'] = __(''); // Add appropriate success message;
+        \$this->results['data'] = []; // Replace with actual data, e.g., UserResponseDTO::fromModel(\$model);
     }
 
     private function prepare(array \$dto): array
