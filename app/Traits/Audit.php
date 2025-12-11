@@ -12,9 +12,7 @@ trait Audit
         $object->{'is_active'} = true;
         $object->{'version'} = 0;
         $object->{'created_by'}  =  Auth::user()->id ?? null;
-        $object->{'updated_by'} =  Auth::user()->id ?? null;
         $object->{'created_at'} = time();
-        $object->{'updated_at'} = time();
     }
 
     public function prepareAuditUpdate($object)
