@@ -2,7 +2,7 @@
 
 namespace Modules\Auth\Services\Auth\Contracts;
 
-use Modules\Auth\DTOs\LoginRequestDTO;
+use Modules\Auth\DTOs\Auth\Requests\LoginRequestDTO;
 
 interface LoginServiceInterface
 {

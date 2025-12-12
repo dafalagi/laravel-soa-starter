@@ -5,7 +5,7 @@ namespace Modules\Auth\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Modules\Auth\DTOs\LoginRequestDTO;
+use Modules\Auth\DTOs\Auth\Requests\LoginRequestDTO;
 use Modules\Auth\Http\Requests\Api\Admin\Auth\LoginRequest;
 use Modules\Auth\Services\Auth\Contracts\LoginServiceInterface;
 use Modules\Auth\Services\Auth\Contracts\LogoutServiceInterface;
