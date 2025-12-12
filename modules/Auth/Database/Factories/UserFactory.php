@@ -47,7 +47,7 @@ class UserFactory extends Factory
             'updated_by' => null,
             'deleted_by' => null,
             'created_at' => time(),
-            'updated_at' => time(),
+            'updated_at' => null,
             'deleted_at' => null,
         ];
     }
