@@ -25,8 +25,8 @@ class DeleteUserService extends BaseService implements DeleteUserServiceInterfac
         $this->prepareAuditDelete($model);
         $model->save();
 
-        $this->results['data'] = null;
         $this->results['message'] = __('auth::user.delete.success');
+        $this->results['data'] = null;
     }
 
     private function prepare(array $dto): array
