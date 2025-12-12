@@ -42,7 +42,7 @@ class LoginServiceTest extends TestCase
         ]);
 
         // Act
-        $result = $this->service->execute($dto, true);
+        $result = $this->service->execute($dto);
 
         // Assert
         $this->assertArrayHasKey('data', $result);
@@ -222,7 +222,7 @@ class LoginServiceTest extends TestCase
             ]);
 
             // Act
-            $result = $this->service->execute($dto, true);
+            $result = $this->service->execute($dto);
 
             // Assert
             $this->assertArrayHasKey('data', $result);
@@ -251,7 +251,7 @@ class LoginServiceTest extends TestCase
         ]);
 
         // Act
-        $result = $this->service->execute($dto, true);
+        $result = $this->service->execute($dto);
 
         // Assert
         $this->assertArrayHasKey('data', $result);
@@ -275,7 +275,7 @@ class LoginServiceTest extends TestCase
         ]);
 
         // Act
-        $this->service->execute($dto, true);
+        $this->service->execute($dto);
 
         // Assert
         $tokens = $user->tokens()->where('name', 'web_token')->get();
