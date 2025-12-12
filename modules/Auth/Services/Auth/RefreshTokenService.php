@@ -5,7 +5,7 @@ namespace Modules\Auth\Services\Auth;
 use App\Services\BaseService;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
-use Modules\Auth\DTOs\AuthResponseDTO;
+use Modules\Auth\DTOs\Auth\Responses\AuthResponseDTO;
 use Modules\Auth\DTOs\User\Responses\UserResponseDTO;
 use Modules\Auth\Services\Auth\Contracts\RefreshTokenServiceInterface;
 
@@ -30,8 +30,8 @@ class RefreshTokenService extends BaseService implements RefreshTokenServiceInte
         $token = $user->createToken(app('client').'_token')->accessToken;
         $user = UserResponseDTO::fromModel($user);
 
-        $this->results['data'] = AuthResponseDTO::fromUserAndToken($user, $token);
         $this->results['message'] = __('auth::auth.token.refresh_success');
+        $this->results['data'] = AuthResponseDTO::fromUserAndToken($user, $token)->toArray();
     }
 
     private function prepare(array $dto): array

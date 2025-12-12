@@ -23,8 +23,8 @@ class LogoutService extends BaseService implements LogoutServiceInterface
         $user = Auth::user();
         $this->revokeAccessAndRefreshToken($user);
 
-        $this->results['data'] = null;
         $this->results['message'] = __('auth::auth.logout.success');
+        $this->results['data'] = null;
     }
 
     private function revokeAccessAndRefreshToken($user)

@@ -33,8 +33,8 @@ class LoginService extends BaseService implements LoginServiceInterface
         $token = $user->createToken("{$dto['client']}_token")->accessToken;
         $user = UserResponseDTO::fromModel($user);
 
-        $this->results['data'] = AuthResponseDTO::fromUserAndToken($user, $token)->toArray();
         $this->results['message'] = __('auth::auth.login.success');
+        $this->results['data'] = AuthResponseDTO::fromUserAndToken($user, $token)->toArray();
     }
 
     private function prepare(array $dto): array
