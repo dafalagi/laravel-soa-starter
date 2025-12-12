@@ -9,17 +9,17 @@ use Modules\Auth\Models\User;
 class UserResponseDTO
 {
     public function __construct(
-        public readonly ?int $id = null,
-        public readonly ?string $uuid = null,
+        public readonly int $id,
+        public readonly string $uuid,
 
-        public readonly ?string $email = null,
-        public readonly ?Carbon $email_verified_at = null,
+        public readonly string $email,
+        public readonly ?Carbon $email_verified_at,
 
-        public readonly ?int $version = null,
-        public readonly ?Carbon $created_at = null,
-        public readonly ?Carbon $updated_at = null,
-        public readonly ?User $createdBy = null,
-        public readonly ?User $updatedBy = null,
+        public readonly int $version,
+        public readonly Carbon $created_at,
+        public readonly ?Carbon $updated_at,
+        public readonly ?User $createdBy,
+        public readonly ?User $updatedBy,
     ) {}
 
     public static function fromModel(User $user): self
