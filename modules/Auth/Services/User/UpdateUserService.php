@@ -30,8 +30,9 @@ class UpdateUserService extends BaseService implements UpdateUserServiceInterfac
         $this->prepareAuditUpdate($model);
         $model->save();
 
-        $this->results['data'] = UserResponseDTO::fromModel($model);
         $this->results['message'] = __('auth::user.update.success');
+        $this->results['data'] = UserResponseDTO::fromModel($model)
+            ->toArray(except: ['id']);
     }
 
     private function prepare(array $dto): array
