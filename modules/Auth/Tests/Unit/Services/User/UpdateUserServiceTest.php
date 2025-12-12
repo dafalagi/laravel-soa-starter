@@ -38,7 +38,7 @@ class UpdateUserServiceTest extends TestCase
         ]);
 
         // Act
-        $result = $this->service->execute($dto, true);
+        $result = $this->service->execute($dto);
 
         // Assert
         $this->assertArrayHasKey('data', $result);
