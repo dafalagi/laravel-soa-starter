@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Auth\Http\Controllers;
+namespace Modules\Auth\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Traits\ApiResponse;
