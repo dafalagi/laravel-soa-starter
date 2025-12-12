@@ -15,6 +15,7 @@
 
             <!-- Auth -->
             <directory>modules/Auth/Tests/Unit/Services/User</directory>
+            <directory>modules/Auth/Tests/Unit/Services/Auth</directory>
         </testsuite>
         <testsuite name="Feature">
             <!-- <directory>tests/Feature</directory> -->

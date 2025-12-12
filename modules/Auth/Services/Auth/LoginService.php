@@ -20,6 +20,7 @@ class LoginService extends BaseService implements LoginServiceInterface
     {
         $dto = $this->prepare($dto);
 
+        /** @var \Modules\Auth\Models\User $user */
         $user = User::where('email', $dto['email'])
             ->where('is_active', true)
             ->first();
@@ -29,12 +30,20 @@ class LoginService extends BaseService implements LoginServiceInterface
 
         if (Hash::check($dto['password'], $user->password) == false)
             throw new \Exception(__('auth::auth.login.invalid_credentials'), 401);
+        
+        $token = $user->createToken("{$dto['client']}_token");
 
-        $token = $user->createToken("{$dto['client']}_token")->accessToken;
+        if ($dto['remember']) {
+            $current_token = $user->tokens()->where('id', $token->token->id)->first();
+            $current_token->expires_at = now()->addMonth();
+            $current_token->save();
+        }
+
+        $access_token = $token->accessToken;
         $user = UserResponseDTO::fromModel($user);
 
         $this->results['message'] = __('auth::auth.login.success');
-        $this->results['data'] = AuthResponseDTO::fromUserAndToken($user, $token)->toArray();
+        $this->results['data'] = AuthResponseDTO::fromUserAndToken($user, $access_token)->toArray();
     }
 
     private function prepare(array $dto): array
