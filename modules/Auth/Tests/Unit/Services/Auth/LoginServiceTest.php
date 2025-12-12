@@ -25,7 +25,7 @@ class LoginServiceTest extends TestCase
         $this->artisan('passport:client --personal --name="Test Personal Access Client" --no-interaction');
     }
 
-    public function test_login_service_authenticates_user_successfully(): void
+    public function test_authenticates_user_successfully(): void
     {
         // Arrange
         $user = User::factory()->create([
@@ -64,7 +64,7 @@ class LoginServiceTest extends TestCase
         $this->assertEquals('Bearer', $data['token_type']);
     }
 
-    public function test_login_service_fails_with_invalid_email(): void
+    public function test_fails_with_invalid_email(): void
     {
         // Arrange
         $dto = LoginRequestDTO::fromArray([
@@ -82,7 +82,7 @@ class LoginServiceTest extends TestCase
         $this->service->execute($dto, true);
     }
 
-    public function test_login_service_fails_with_invalid_password(): void
+    public function test_fails_with_invalid_password(): void
     {
         // Arrange
         User::factory()->create([
@@ -106,7 +106,7 @@ class LoginServiceTest extends TestCase
         $this->service->execute($dto, true);
     }
 
-    public function test_login_service_fails_with_inactive_user(): void
+    public function test_fails_with_inactive_user(): void
     {
         // Arrange
         User::factory()->create([
@@ -130,7 +130,7 @@ class LoginServiceTest extends TestCase
         $this->service->execute($dto, true);
     }
 
-    public function test_login_service_validates_required_email(): void
+    public function test_validates_required_email(): void
     {
         // Arrange
         $dto = LoginRequestDTO::fromArray([
@@ -144,7 +144,7 @@ class LoginServiceTest extends TestCase
         $this->service->execute($dto, true);
     }
 
-    public function test_login_service_validates_email_format(): void
+    public function test_validates_email_format(): void
     {
         // Arrange
         $dto = LoginRequestDTO::fromArray([
@@ -159,7 +159,7 @@ class LoginServiceTest extends TestCase
         $this->service->execute($dto, true);
     }
 
-    public function test_login_service_validates_required_password(): void
+    public function test_validates_required_password(): void
     {
         // Arrange
         $dto = LoginRequestDTO::fromArray([
@@ -173,7 +173,7 @@ class LoginServiceTest extends TestCase
         $this->service->execute($dto, true);
     }
 
-    public function test_login_service_validates_required_client(): void
+    public function test_validates_required_client(): void
     {
         // Arrange
         $dto = LoginRequestDTO::fromArray([
@@ -187,7 +187,7 @@ class LoginServiceTest extends TestCase
         $this->service->execute($dto, true);
     }
 
-    public function test_login_service_validates_client_values(): void
+    public function test_validates_client_values(): void
     {
         // Arrange
         $dto = LoginRequestDTO::fromArray([
@@ -202,7 +202,7 @@ class LoginServiceTest extends TestCase
         $this->service->execute($dto, true);
     }
 
-    public function test_login_service_accepts_valid_client_types(): void
+    public function test_accepts_valid_client_types(): void
     {
         // Arrange
         $user = User::factory()->create([
@@ -234,7 +234,7 @@ class LoginServiceTest extends TestCase
         }
     }
 
-    public function test_login_service_validates_remember_as_boolean(): void
+    public function test_validates_remember_as_boolean(): void
     {
         // Arrange
         $user = User::factory()->create([
@@ -258,7 +258,7 @@ class LoginServiceTest extends TestCase
         $this->assertEquals(__('auth::auth.login.success'), $result['message']);
     }
 
-    public function test_login_service_creates_token_with_correct_name(): void
+    public function test_creates_token_with_correct_name(): void
     {
         // Arrange
         $user = User::factory()->create([

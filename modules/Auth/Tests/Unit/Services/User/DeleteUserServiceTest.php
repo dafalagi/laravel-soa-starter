@@ -22,7 +22,7 @@ class DeleteUserServiceTest extends TestCase
         $this->service = new DeleteUserService();
     }
 
-    public function test_delete_user_service_deletes_user_successfully_with_user_id(): void
+    public function test_deletes_user_successfully_with_user_id(): void
     {
         // Arrange
         $user = User::factory()->create(['version' => 0]);
@@ -51,7 +51,7 @@ class DeleteUserServiceTest extends TestCase
         $this->assertEquals(0, $deleted_user->version);
     }
 
-    public function test_delete_user_service_deletes_user_successfully_with_user_uuid(): void
+    public function test_deletes_user_successfully_with_user_uuid(): void
     {
         // Arrange
         $user = User::factory()->create(['version' => 0]);
@@ -78,7 +78,7 @@ class DeleteUserServiceTest extends TestCase
         $this->assertEquals(0, $deleted_user->version);
     }
 
-    public function test_delete_user_service_validates_user_id_exists(): void
+    public function test_validates_user_id_exists(): void
     {
         // Arrange
         $dto = DeleteUserRequestDTO::fromArray([
@@ -91,7 +91,7 @@ class DeleteUserServiceTest extends TestCase
         $this->service->execute($dto, true);
     }
 
-    public function test_delete_user_service_validates_user_uuid_exists(): void
+    public function test_validates_user_uuid_exists(): void
     {
         // Arrange
         $dto = DeleteUserRequestDTO::fromArray([
@@ -104,7 +104,7 @@ class DeleteUserServiceTest extends TestCase
         $this->service->execute($dto, true);
     }
 
-    public function test_delete_user_service_validates_required_version(): void
+    public function test_validates_required_version(): void
     {
         // Arrange
         $user = User::factory()->create();
@@ -118,7 +118,7 @@ class DeleteUserServiceTest extends TestCase
         $this->service->execute($dto, true);
     }
 
-    public function test_delete_user_service_validates_version_mismatch(): void
+    public function test_validates_version_mismatch(): void
     {
         // Arrange
         $user = User::factory()->create(['version' => 5]);
@@ -133,7 +133,7 @@ class DeleteUserServiceTest extends TestCase
         $this->service->execute($dto, true);
     }
 
-    public function test_delete_user_service_sets_deleted_at(): void
+    public function test_sets_deleted_at(): void
     {
         // Arrange
         $user = User::factory()->create(['version' => 0]);
@@ -151,7 +151,7 @@ class DeleteUserServiceTest extends TestCase
         $this->assertNotNull($deleted_user->deleted_at);
     }
 
-    public function test_delete_user_service_updates_audit_fields(): void
+    public function test_updates_audit_fields(): void
     {
         /** @var User */
         $logged_in_user = User::factory()->create();
@@ -177,7 +177,7 @@ class DeleteUserServiceTest extends TestCase
         $this->assertNotNull($deleted_user->deleted_by);
     }
 
-    public function test_delete_user_service_returns_proper_response_structure(): void
+    public function test_returns_proper_response_structure(): void
     {
         // Arrange
         $user = User::factory()->create(['version' => 0]);
@@ -198,7 +198,7 @@ class DeleteUserServiceTest extends TestCase
         $this->assertIsString($result['message']);
     }
 
-    public function test_delete_user_service_requires_user_id_or_uuid(): void
+    public function test_requires_user_id_or_uuid(): void
     {
         // Arrange
         $dto = DeleteUserRequestDTO::fromArray([
@@ -210,7 +210,7 @@ class DeleteUserServiceTest extends TestCase
         $this->service->execute($dto, true);
     }
 
-    public function test_delete_user_service_preserves_other_fields(): void
+    public function test_preserves_other_fields(): void
     {
         // Arrange
         $user = User::factory()->create([
@@ -236,7 +236,7 @@ class DeleteUserServiceTest extends TestCase
         $this->assertEquals($original_created_at, $deleted_user->created_at);
     }
 
-    public function test_delete_user_service_soft_deletes_not_hard_delete(): void
+    public function test_soft_deletes_not_hard_delete(): void
     {
         // Arrange
         $user = User::factory()->create(['version' => 0]);

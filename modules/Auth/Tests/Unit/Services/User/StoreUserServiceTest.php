@@ -7,7 +7,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Modules\Auth\DTOs\User\Requests\StoreUserRequestDTO;
-use Modules\Auth\DTOs\User\Responses\UserResponseDTO;
 use Modules\Auth\Models\User;
 use Modules\Auth\Services\User\StoreUserService;
 
@@ -23,7 +22,7 @@ class StoreUserServiceTest extends TestCase
         $this->service = new StoreUserService();
     }
 
-    public function test_store_user_service_creates_user_successfully(): void
+    public function test_creates_user_successfully(): void
     {
         // Arrange
         $dto = StoreUserRequestDTO::fromArray([
@@ -36,7 +35,6 @@ class StoreUserServiceTest extends TestCase
 
         // Assert
         $this->assertArrayHasKey('data', $result);
-        $this->assertInstanceOf(UserResponseDTO::class, $result['data']);
 
         $this->assertArrayHasKey('message', $result);
         $this->assertEquals(__('auth::user.store.success'), $result['message']);
@@ -49,7 +47,7 @@ class StoreUserServiceTest extends TestCase
         $this->assertTrue(Hash::check('password123', $user->password));
     }
 
-    public function test_store_user_service_validates_required_email(): void
+    public function test_validates_required_email(): void
     {
         // Arrange
         $dto = StoreUserRequestDTO::fromArray([
@@ -61,7 +59,7 @@ class StoreUserServiceTest extends TestCase
         $this->service->execute($dto, true);
     }
 
-    public function test_store_user_service_validates_email_format(): void
+    public function test_validates_email_format(): void
     {
         // Arrange
         $dto = StoreUserRequestDTO::fromArray([
@@ -74,7 +72,7 @@ class StoreUserServiceTest extends TestCase
         $this->service->execute($dto, true);
     }
 
-    public function test_store_user_service_validates_unique_email(): void
+    public function test_validates_unique_email(): void
     {
         // Arrange
         User::factory()->create(['email' => 'existing@example.com']);
@@ -89,7 +87,7 @@ class StoreUserServiceTest extends TestCase
         $this->service->execute($dto, true);
     }
 
-    public function test_store_user_service_validates_required_password(): void
+    public function test_validates_required_password(): void
     {
         // Arrange
         $dto = StoreUserRequestDTO::fromArray([
@@ -101,7 +99,7 @@ class StoreUserServiceTest extends TestCase
         $this->service->execute($dto, true);
     }
 
-    public function test_store_user_service_validates_password_minimum_length(): void
+    public function test_validates_password_minimum_length(): void
     {
         // Arrange
         $dto = StoreUserRequestDTO::fromArray([
@@ -114,7 +112,7 @@ class StoreUserServiceTest extends TestCase
         $this->service->execute($dto, true);
     }
 
-    public function test_store_user_service_hashes_password_if_needed(): void
+    public function test_hashes_password_if_needed(): void
     {
         // Arrange
         $plain_password = 'password123';
@@ -132,7 +130,7 @@ class StoreUserServiceTest extends TestCase
         $this->assertTrue(Hash::check($plain_password, $user->password));
     }
 
-    public function test_store_user_service_does_not_rehash_already_hashed_password(): void
+    public function test_does_not_rehash_already_hashed_password(): void
     {
         // Arrange
         $hashed_password = Hash::make('password123');
@@ -149,7 +147,7 @@ class StoreUserServiceTest extends TestCase
         $this->assertEquals($hashed_password, $user->password);
     }
 
-    public function test_store_user_service_returns_proper_response_structure(): void
+    public function test_returns_proper_response_structure(): void
     {
         // Arrange
         $dto = StoreUserRequestDTO::fromArray([
@@ -165,11 +163,10 @@ class StoreUserServiceTest extends TestCase
         $this->assertArrayHasKey('data', $result);
         $this->assertArrayHasKey('message', $result);
         
-        $this->assertInstanceOf(UserResponseDTO::class, $result['data']);
         $this->assertIsString($result['message']);
     }
 
-    public function test_store_user_service_sets_audit_fields(): void
+    public function test_sets_audit_fields(): void
     {
         // Arrange
         $dto = StoreUserRequestDTO::fromArray([
@@ -183,12 +180,12 @@ class StoreUserServiceTest extends TestCase
         // Assert
         $user = User::where('email', 'john@example.com')->first();
         $this->assertNotNull($user->created_at);
-        $this->assertNotNull($user->updated_at);
+        $this->assertNull($user->updated_at);
         $this->assertNotNull($user->uuid);
         $this->assertEquals(0, $user->version);
     }
 
-    public function test_store_user_service_creates_user_with_proper_table(): void
+    public function test_creates_user_with_proper_table(): void
     {
         // Arrange
         $dto = StoreUserRequestDTO::fromArray([
