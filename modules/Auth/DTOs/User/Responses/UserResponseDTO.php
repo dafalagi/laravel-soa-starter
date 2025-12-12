@@ -41,7 +41,7 @@ class UserResponseDTO
 
     public static function fromCollection(Collection $users): array
     {
-        return array_map(fn(User $user) => self::fromModel($user), $users->all());
+        return array_map(fn(User $user) => (object) self::fromModel($user)->toArray(), $users->all());
     }
 
     /**

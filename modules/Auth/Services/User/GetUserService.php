@@ -29,7 +29,7 @@ class GetUserService extends BaseService implements GetUserServiceInterface
             $user_id = $dto['user_id'] ?? $this->findIdByUuid(User::query(), $dto['user_uuid']);
             $model->where('id', $user_id);
             
-            $data = UserResponseDTO::fromModel($model->first());
+            $data = (object) UserResponseDTO::fromModel($model->first())->toArray();
         } else {
             if ($dto['with_pagination'] === true) {
                 $this->results['pagination'] = $this->paginationDetail($dto['per_page'], $dto['page'], $model->count());
