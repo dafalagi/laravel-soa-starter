@@ -24,7 +24,7 @@ class AuthResponseDTO
     public function toArray(): array
     {
         $data = [
-            'user' => $this->user->toArray(),
+            'user' => $this->user->toArray(except: ['id']),
         ];
 
         if ($this->token) {
