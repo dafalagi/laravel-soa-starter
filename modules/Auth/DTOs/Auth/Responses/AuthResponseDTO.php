@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Auth\DTOs;
+namespace Modules\Auth\DTOs\Auth\Responses;
 
 use Modules\Auth\DTOs\User\Responses\UserResponseDTO;
 

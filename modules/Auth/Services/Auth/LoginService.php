@@ -4,7 +4,7 @@ namespace Modules\Auth\Services\Auth;
 
 use App\Services\BaseService;
 use Illuminate\Support\Facades\Hash;
-use Modules\Auth\DTOs\AuthResponseDTO;
+use Modules\Auth\DTOs\Auth\Responses\AuthResponseDTO;
 use Modules\Auth\DTOs\User\Responses\UserResponseDTO;
 use Modules\Auth\Models\User;
 use Modules\Auth\Services\Auth\Contracts\LoginServiceInterface;
