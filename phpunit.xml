@@ -22,6 +22,7 @@
 
             <!-- Auth -->
             <directory>modules/Auth/Tests/Feature/User</directory>
+            <directory>modules/Auth/Tests/Feature/Auth</directory>
         </testsuite>
     </testsuites>
     <source>
