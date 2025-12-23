@@ -10,7 +10,8 @@ class MakeModelCommand extends Command
     protected $signature = 'make:model 
                             {module : The module name} 
                             {model : The model name}
-                            {--force}';
+                            {--force}
+                            {--m|migration : Create a migration file for the model}';
 
     protected $description = 'Create a new model class that extends BaseModel';
 
@@ -19,6 +20,7 @@ class MakeModelCommand extends Command
         $module = $this->argument('module');
         $model = $this->argument('model');
         $force = $this->option('force');
+        $create_migration = $this->option('migration');
 
         // Validate inputs
         if (!$this->validateInputs($module, $model))
@@ -33,6 +35,19 @@ class MakeModelCommand extends Command
 
             $this->info("Model created successfully!");
             $this->info("Model: modules/{$module_name}/Models/{$model_name}.php");
+
+            if ($create_migration) {
+                // Reuse MakeMigrationCommand to create migration
+                $table_name = $this->getTableName($module_name, $model_name);
+                $migration_name = "create_" . $table_name . "_table";
+                
+                $this->call('make:migration', [
+                    'module' => $module_name,
+                    'name' => $migration_name,
+                    '--create' => $table_name,
+                    '--force' => $force,
+                ]);
+            }
 
         } catch (\Exception $e) {
             $this->error("Failed to create model: " . $e->getMessage());

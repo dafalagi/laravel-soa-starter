@@ -5,7 +5,7 @@ The `make:model` command generates a new model class that extends BaseModel, fol
 ## Command Signature
 
 ```bash
-php artisan make:model {module} {model} [--force]
+php artisan make:model {module} {model} [--force] [--migration]
 ```
 
 ## Parameters
@@ -13,6 +13,7 @@ php artisan make:model {module} {model} [--force]
 - **module** (required): The module name where the model will be created
 - **model** (required): The model name (will be converted to PascalCase)
 - **--force** (optional): Overwrite existing files without confirmation
+- **--migration** (optional): Create a migration file for the model
 
 ## Usage Examples
 
@@ -31,6 +32,16 @@ php artisan make:model Order Payment
 php artisan make:model Content Article
 ```
 
+### Model with Migration
+
+```bash
+# Create a model with its migration
+php artisan make:model Auth Profile --migration
+
+# Shorthand for migration flag
+php artisan make:model Product Category -m
+```
+
 ### Generated Files Structure
 
 When you run `php artisan make:model Auth Profile`, the command generates:
@@ -38,6 +49,15 @@ When you run `php artisan make:model Auth Profile`, the command generates:
 ```
 modules/Auth/Models/
 └── Profile.php
+```
+
+When you run `php artisan make:model Auth Profile --migration`, the command generates:
+
+```
+modules/Auth/Models/
+└── Profile.php
+modules/Auth/Database/Migrations/
+└── 2025_12_23_143052_000001_create_auth_profiles_table.php
 ```
 
 ## Generated Code Structure
@@ -273,11 +293,27 @@ class ProfileFactory extends Factory
 
 ## Migration Integration
 
-Create a corresponding migration for your model:
+### Automatic Migration Creation
+
+The `make:model` command can automatically create a corresponding migration file using the `--migration` flag:
 
 ```bash
-# Create migration
-php artisan make:migration create_auth_profiles_table
+# Create model with migration in one command
+php artisan make:model Auth Profile --migration
+```
+
+This automatically:
+- Creates the model file: `modules/Auth/Models/Profile.php`
+- Creates the migration file with proper naming: `modules/Auth/Database/Migrations/YYYY_MM_DD_HHMMSS_sequence_create_auth_profiles_table.php`
+- Sets up the migration with standard audit fields and proper table structure
+
+### Manual Migration Creation
+
+Alternatively, create a migration separately:
+
+```bash
+# Create migration manually
+php artisan make:migration Auth create_auth_profiles_table --create=auth_profiles
 ```
 
 **Example Migration:**
@@ -407,7 +443,7 @@ class ProfileTest extends TestCase
 - [`make:dto`](MAKE_DTO.md) - Create DTOs for model data transfer
 - [`make:controller`](MAKE_CONTROLLER.md) - Create controllers that use models
 - [`make:request`](MAKE_REQUEST.md) - Create form requests for model validation
-- [`make:migration`](https://laravel.com/docs/migrations) - Create database migrations
+- [`make:migration`](MAKE_MIGRATION.md) - Create database migrations (automatically called with --migration flag)
 
 ## Validation & Error Handling
 
@@ -422,35 +458,35 @@ The command includes several validation checks:
 
 ### User Management Models
 ```bash
-php artisan make:model Auth User
-php artisan make:model Auth Profile
-php artisan make:model Auth Role
-php artisan make:model Auth Permission
+php artisan make:model Auth User --migration
+php artisan make:model Auth Profile --migration
+php artisan make:model Auth Role --migration
+php artisan make:model Auth Permission --migration
 ```
 
 ### E-commerce Models
 ```bash
-php artisan make:model Product Category
-php artisan make:model Product Item
-php artisan make:model Order Cart
-php artisan make:model Order Payment
-php artisan make:model Inventory Stock
+php artisan make:model Product Category --migration
+php artisan make:model Product Item --migration
+php artisan make:model Order Cart --migration
+php artisan make:model Order Payment --migration
+php artisan make:model Inventory Stock --migration
 ```
 
 ### Content Management Models
 ```bash
-php artisan make:model Content Article
-php artisan make:model Content Comment
-php artisan make:model Content Tag
-php artisan make:model Media File
+php artisan make:model Content Article --migration
+php artisan make:model Content Comment --migration
+php artisan make:model Content Tag --migration
+php artisan make:model Media File --migration
 ```
 
 ### Blog Models
 ```bash
-php artisan make:model Blog Post
-php artisan make:model Blog Category
-php artisan make:model Blog Tag
-php artisan make:model Blog Author
+php artisan make:model Blog Post --migration
+php artisan make:model Blog Category --migration
+php artisan make:model Blog Tag --migration
+php artisan make:model Blog Author --migration
 ```
 
 ## Advanced Features
