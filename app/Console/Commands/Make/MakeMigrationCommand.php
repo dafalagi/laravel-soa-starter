@@ -33,11 +33,10 @@ class MakeMigrationCommand extends Command
 
         try {
             // Create migration file
-            $this->createMigrationFile($module_name, $migration_name, $create, $table, $force);
+            $migration_filename = $this->createMigrationFile($module_name, $migration_name, $create, $table, $force);
 
             $this->info("Migration created successfully!");
-            $this->info("Migration: modules/{$module_name}/Database/Migrations/{$this->getMigrationFileName($migration_name)}.php");
-
+            $this->info("Migration: modules/{$module_name}/Database/Migrations/{$migration_filename}.php");
         } catch (\Exception $e) {
             $this->error("Failed to create migration: " . $e->getMessage());
             return self::FAILURE;
@@ -62,7 +61,7 @@ class MakeMigrationCommand extends Command
         return true;
     }
 
-    private function createMigrationFile(string $module, string $migration_name, ?string $create, ?string $table, bool $force): void
+    private function createMigrationFile(string $module, string $migration_name, ?string $create, ?string $table, bool $force): string
     {
         $migration_filename = $this->getMigrationFileName($migration_name);
         $migration_path = base_path("modules/{$module}/Database/Migrations/{$migration_filename}.php");
@@ -78,6 +77,8 @@ class MakeMigrationCommand extends Command
 
         $migration_stub = $this->getMigrationStub($create, $table);
         file_put_contents($migration_path, $migration_stub);
+
+        return $migration_filename;
     }
 
     private function getMigrationFileName(string $migration_name): string
