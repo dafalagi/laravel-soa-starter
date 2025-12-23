@@ -12,7 +12,7 @@ class MakeTestCommand extends Command
                             {feature : The feature name}
                             {name : The test name}
                             {type : The test type (feature or unit)}
-                            {--service : Generate test for service}
+                            {--s|service : Generate test for service}
                             {--force}';
 
     protected $description = 'Create a new test file';
