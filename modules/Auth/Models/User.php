@@ -14,7 +14,6 @@ use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable implements OAuthenticatable
 {
-    /** @use HasModularFactory<\Modules\Auth\Database\Factories\UserFactory> */
     use HasModularFactory, Notifiable, SoftDeletes, HasApiTokens;
 
     protected $table = 'auth_users';
