@@ -5,7 +5,7 @@ The `make:model` command generates a new model class that extends BaseModel, fol
 ## Command Signature
 
 ```bash
-php artisan make:model {module} {model} [--force] [--migration]
+php artisan make:model {module} {model} [--force] [--migration] [--factory]
 ```
 
 ## Parameters
@@ -14,6 +14,7 @@ php artisan make:model {module} {model} [--force] [--migration]
 - **model** (required): The model name (will be converted to PascalCase)
 - **--force** (optional): Overwrite existing files without confirmation
 - **--migration** (optional): Create a migration file for the model
+- **--factory** (optional): Create a factory class for the model
 
 ## Usage Examples
 
@@ -32,14 +33,14 @@ php artisan make:model Order Payment
 php artisan make:model Content Article
 ```
 
-### Model with Migration
+### Model with Both Migration and Factory
 
 ```bash
-# Create a model with its migration
-php artisan make:model Auth Profile --migration
+# Create a model with both migration and factory
+php artisan make:model Auth Profile --migration --factory
 
-# Shorthand for migration flag
-php artisan make:model Product Category -m
+# Using shorthand flags
+php artisan make:model Product Category -m -f
 ```
 
 ### Generated Files Structure
@@ -51,13 +52,15 @@ modules/Auth/Models/
 └── Profile.php
 ```
 
-When you run `php artisan make:model Auth Profile --migration`, the command generates:
+When you run `php artisan make:model Auth Profile --migration --factory`, the command generates:
 
 ```
 modules/Auth/Models/
 └── Profile.php
 modules/Auth/Database/Migrations/
 └── 2025_12_23_143052_000001_create_auth_profiles_table.php
+modules/Auth/Database/Factories/
+└── ProfileFactory.php
 ```
 
 ## Generated Code Structure
@@ -250,14 +253,30 @@ protected function setEmailAttribute(string $value): void
 
 ## Factory Integration
 
-Create a corresponding factory for your model:
+### Automatic Factory Creation
+
+The `make:model` command can automatically create a corresponding factory file using the `--factory` flag:
 
 ```bash
-# Create factory file
-touch modules/Auth/database/factories/ProfileFactory.php
+# Create model with factory in one command
+php artisan make:model Auth Profile --factory
 ```
 
-**File:** `modules/Auth/database/factories/ProfileFactory.php`
+This automatically:
+- Creates the model file: `modules/Auth/Models/Profile.php`
+- Creates the factory file: `modules/Auth/Database/Factories/ProfileFactory.php`
+- Sets up the factory with proper model binding and standard attributes
+
+### Manual Factory Creation
+
+Alternatively, create a factory separately using the `make:factory` command:
+
+```bash
+# Create factory manually
+php artisan make:factory Auth Profile
+```
+
+**Generated File:** `modules/Auth/Database/Factories/ProfileFactory.php`
 
 ```php
 <?php
@@ -458,35 +477,35 @@ The command includes several validation checks:
 
 ### User Management Models
 ```bash
-php artisan make:model Auth User --migration
-php artisan make:model Auth Profile --migration
-php artisan make:model Auth Role --migration
-php artisan make:model Auth Permission --migration
+php artisan make:model Auth User --migration --factory
+php artisan make:model Auth Profile --migration --factory
+php artisan make:model Auth Role --migration --factory
+php artisan make:model Auth Permission --migration --factory
 ```
 
 ### E-commerce Models
 ```bash
-php artisan make:model Product Category --migration
-php artisan make:model Product Item --migration
-php artisan make:model Order Cart --migration
-php artisan make:model Order Payment --migration
-php artisan make:model Inventory Stock --migration
+php artisan make:model Product Category --migration --factory
+php artisan make:model Product Item --migration --factory
+php artisan make:model Order Cart --migration --factory
+php artisan make:model Order Payment --migration --factory
+php artisan make:model Inventory Stock --migration --factory
 ```
 
 ### Content Management Models
 ```bash
-php artisan make:model Content Article --migration
-php artisan make:model Content Comment --migration
-php artisan make:model Content Tag --migration
-php artisan make:model Media File --migration
+php artisan make:model Content Article --migration --factory
+php artisan make:model Content Comment --migration --factory
+php artisan make:model Content Tag --migration --factory
+php artisan make:model Media File --migration --factory
 ```
 
 ### Blog Models
 ```bash
-php artisan make:model Blog Post --migration
-php artisan make:model Blog Category --migration
-php artisan make:model Blog Tag --migration
-php artisan make:model Blog Author --migration
+php artisan make:model Blog Post --migration --factory
+php artisan make:model Blog Category --migration --factory
+php artisan make:model Blog Tag --migration --factory
+php artisan make:model Blog Author --migration --factory
 ```
 
 ## Advanced Features

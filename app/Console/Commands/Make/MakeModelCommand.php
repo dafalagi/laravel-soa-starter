@@ -11,7 +11,8 @@ class MakeModelCommand extends Command
                             {module : The module name} 
                             {model : The model name}
                             {--force}
-                            {--m|migration : Create a migration file for the model}';
+                            {--m|migration : Create a migration file for the model}
+                            {--f|factory : Create a factory class for the model}';
 
     protected $description = 'Create a new model class that extends BaseModel';
 
@@ -21,6 +22,7 @@ class MakeModelCommand extends Command
         $model = $this->argument('model');
         $force = $this->option('force');
         $create_migration = $this->option('migration');
+        $create_factory = $this->option('factory');
 
         // Validate inputs
         if (!$this->validateInputs($module, $model))
@@ -49,6 +51,14 @@ class MakeModelCommand extends Command
                 ]);
             }
 
+            if ($create_factory) {
+                // Reuse MakeFactoryCommand to create factory
+                $this->call('make:factory', [
+                    'module' => $module_name,
+                    'model' => $model_name,
+                    '--force' => $force,
+                ]);
+            }
         } catch (\Exception $e) {
             $this->error("Failed to create model: " . $e->getMessage());
             return self::FAILURE;
